@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/style/style.css">
+    <link rel="shortcut icon" href="imagens/DALL·E 2024-12-19 15.45.29 - A logo design featuring the text 'IceSafe' in a clean, modern font, primarily using blue and white colors. The logo incorporates elements of a cute, c.webp" type="image/x-icon">
+    <title>IceSafe</title>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="src/imagens/photo_5186302310366688534_x-removebg-preview (2).png" alt="logo" class="logo">
+            </div>
+           <!-- Loren carrinho -->
+            <button id="imageButton">
+              <img src="src/imagens/carrinho-removebg-preview.png" alt="Carrinho de compras" />
+            </button>
+
+        </div>
+        <!-- Aba do carrinho -->
+    <div id="cartSidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Carrinho</h3>
+            <button id="closeCart" class="close-cart">X</button>
+        </div>
+        <div class="cart-items">
+            <p><strong>Item 1:</strong> Produto Exemplo</p>
+            <p><strong>Item 2:</strong> Produto Exemplo</p>
+            <p><strong>Item 3:</strong> Produto Exemplo</p>
+            <!-- Aqui os itens do carrinho que vão ser colocados no
+             JavaScript -->
+        </div>
+        <div class="cart-footer">
+            <button class="pay-pix">Pagar via PIX</button>
+        </div>
+    </div>
+    </header>
+
+<main>
+
+  <div class="card">
+      <div class="card-image">
+          <img src="src/imagens/gela.jpg" alt="gela" class="gela">
+      </div>
+      <div class="card-content">
+          <p class="card-title">
+              Snacks<br> 
+              rápidos<br> 
+              para seu trabalho 
+          </p>
+
+          <a href="#products-card" class="card-button">Escolher produtos</a>
+      </div>
+  </div>
+</main>
+
+<main>
+    <div id="products-card" class="products-card">
+        <div class="products-card-content">
+            <h2 class="products-title">Produtos</h2>   
+        </div>
+    </div>
+</main>
+
+<main>
+    <div class="products-list">
+        <div class="product-item">
+            <img src="" alt="Produto 1" class="product-image">
+            <h4 class="product-name">Produto 1</h4>
+            <p class="product-price">R$10,00</p>
+            <button class="add-to-cart">Adicionar ao Carrinho</button>
+        </div>
+</main>
+
+<script src="src/javascript/produtos.js"></script>
+<script src="src/javascript/script.js"></script>
+
+</body>
+</html>

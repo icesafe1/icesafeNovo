@@ -183,11 +183,7 @@ function addItemToCart(item) {
 }
 
 // Mapear Json para gerar a lista
-itemJson.map((item, index) => {
-    let item = document.querySelector('.models .item').cloneNode(true);
-    seleciona('.WindowArea').append(item);
-    // linha 253
-});
+
 
 itemJson.querySelector(".item a").addEventListener("click", (e) => {
     e.preventDefault();

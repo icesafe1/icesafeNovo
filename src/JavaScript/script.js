@@ -55,7 +55,96 @@ const mudarQuantidade = () => {
     });
 };
 
-// Função para adicionar itens ao carrinho
+//começo do projeto teste do chat.
+        // Variáveis Globais
+        // Array para armazenar os itens do carrinho
+
+// Função para adicionar um item ao carrinho
+function addToCart(productId, productName, productPrice) {
+    const itemIndex = cart.findIndex((item) => item.id === productId);
+
+    if (itemIndex > -1) {
+        // Incrementa a quantidade se o item já estiver no carrinho
+        cart[itemIndex].quantity += 1;
+    } else {
+        // Adiciona um novo item ao carrinho
+        cart.push({
+            id: productId,
+            name: productName,
+            price: productPrice,
+            quantity: 1,
+        });
+    }
+
+    updateCartDisplay();
+}
+
+// Função para remover um item do carrinho
+function removeFromCart(productId) {
+    cart = cart.filter((item) => item.id !== productId);
+    updateCartDisplay();
+}
+
+// Função para atualizar a quantidade de um item no carrinho
+function updateItemQuantity(productId, newQuantity) {
+    const item = cart.find((item) => item.id === productId);
+    if (item) {
+        item.quantity = newQuantity > 0 ? newQuantity : 1;
+    }
+    updateCartDisplay();
+}
+
+// Função para calcular o total
+function calculateTotal() {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+}
+
+// Função para atualizar a exibição do carrinho
+function updateCartDisplay() {
+    const cartContainer = document.querySelector('.cart-items');
+    cartContainer.innerHTML = ''; // Limpa o carrinho
+
+    cart.forEach((item) => {
+        const cartItem = document.createElement('div');
+        cartItem.classList.add('cart-item');
+        cartItem.innerHTML = `
+            <p><strong>${item.name}</strong> - ${item.quantity} x R$${item.price.toFixed(2)}</p>
+            <button onclick="removeFromCart(${item.id})">Remover</button>
+            <button onclick="updateItemQuantity(${item.id}, ${item.quantity + 1})">+</button>
+            <button onclick="updateItemQuantity(${item.id}, ${item.quantity - 1})">-</button>
+        `;
+        cartContainer.appendChild(cartItem);
+    });
+
+    // Atualiza o total
+    document.querySelector('#total').innerText = `Total: R$${calculateTotal().toFixed(2)}`;
+}
+
+// Função para finalizar a compra
+function checkout() {
+    if (cart.length === 0) {
+        alert('O carrinho está vazio!');
+    } else {
+        alert(`Compra realizada! Total: R$${calculateTotal().toFixed(2)}`);
+        cart = []; // Limpa o carrinho
+        updateCartDisplay();
+    }
+}
+
+// Exemplo de adição de eventos nos botões de produtos
+document.querySelectorAll('.add-to-cart').forEach((button) => {
+    button.addEventListener('click', () => {
+        const productId = parseInt(button.dataset.id);
+        const productName = button.dataset.name;
+        const productPrice = parseFloat(button.dataset.price);
+        addToCart(productId, productName, productPrice);
+    });
+});
+
+// Final do teste do código do chat
+
+
+// Função para adicionar itens ao carrinho (aqui está codigo do carrinho original)
 const adicionarNoCarrinho = () => {
     seleciona('.info--addButton').addEventListener('click', () => {
         let price = seleciona('.windowArea .item--price').innerHTML.replace('R$', '').trim();
@@ -270,3 +359,5 @@ formDados.addEventListener('submit', (event) => {
 });
 
 };
+
+

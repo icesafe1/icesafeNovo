@@ -66,17 +66,36 @@
     </div>
 </main>
 
-<main>
+<!--html puxado do chatgpt--> 
+<main> 
     <div class="products-list">
         <div class="product-item">
-            <img src="" alt="Produto 1" class="product-image">
             <h4 class="product-name">Produto 1</h4>
             <p class="product-price">R$10,00</p>
-            <button class="add-to-cart">Adicionar ao Carrinho</button>
+            <button 
+                class="add-to-cart" 
+                data-id="1" 
+                data-name="Produto 1" 
+                data-price="10.00">
+                Adicionar ao Carrinho
+            </button>
         </div>
+      <script src="src/JavaScript/itens.js"></script>
+    </div>
+    
+    <div id="cartSidebar" class="cart-sidebar">
+        <h3>Carrinho</h3>
+        <div class="cart-items">
+            <!-- Itens do carrinho serão adicionados dinamicamente -->
+        </div>
+        <p id="total">Total: R$0,00</p>
+        <button onclick="checkout()">Finalizar Compra</button>
+    </div>
+    
 </main>
 
 <script src="src/JavaScript/script.js"></script>
+
 
 </body>
 </html>

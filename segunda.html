@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/style/style.css">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <title>IceSafe</title>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="src/images/photo_5186302310366688534_x-removebg-preview (2).png" alt="logo" class="logo">
+            </div>
+            <button id="imageButton">
+              <img src="src/images/carrinho-removebg-preview.png" alt="Carrinho de compras" />
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="card">
+            <div class="card-image">
+                <img src="src/images/gela.jpg" alt="gela" class="gela">
+            </div>
+            <div class="card-content">
+                <p class="card-title">
+                    Snacks<br> 
+                    rápidos<br> 
+                    para seu trabalho 
+                </p>
+
+                <a href="#products-card" class="card-button">Escolher produtos</a>
+            </div>
+        </div>
+    </main>
+
+    <div id="products-card" class="products-card">
+        <div class="products-card-content">
+            <h2 class="products-title">Produtos</h2>   
+            <div id="product-list" class="product-list"></div>
+        </div>
+    </div>
+
+    <div id="cartSidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Carrinho</h3>
+            <button id="closeCart" class="close-cart">X</button>
+        </div>
+        <div class="cart-items">
+            <div class="cart-item">
+            </div>
+        </div>
+        <div class="cart-footer">
+            <p id="totalPrice"><strong>Total: R$00,00</strong></p>
+            <p>Pagamento via Pix:</p>
+            <img src="" alt="QR Code Pix">
+            <button id="checkoutButton" class="checkout-button">Finalizar Compra</button>
+        </div>
+    </div>
+    <div id="successModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Pagamento efetuado com sucesso</h2>
+            <div class="rating-section">
+                <h3>Avalie-nos</h3>
+                <div class="stars" id="stars">
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                </div>
+            </div>
+            <button id="closeModal" class="close-button">Voltar</button>
+        </div>
+    </div>
+
+    <script src="src/JavaScript/script.js"></script>
+</body>
+</html>

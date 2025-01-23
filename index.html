@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="src/style/style.css">
-    <link rel="shortcut icon" href="images/DALL·E 2024-12-19 15.45.29 - A logo design featuring the text 'IceSafe' in a clean, modern font, primarily using blue and white colors. The logo incorporates elements of a cute, c.webp" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
     <title>IceSafe</title>
 </head>
 <body>
@@ -15,87 +14,69 @@
             <div class="logo">
                 <img src="src/images/photo_5186302310366688534_x-removebg-preview (2).png" alt="logo" class="logo">
             </div>
-           <!-- Loren carrinho -->
             <button id="imageButton">
               <img src="src/images/carrinho-removebg-preview.png" alt="Carrinho de compras" />
             </button>
-
         </div>
-        <!-- Aba do carrinho -->
+    </header>
+
+    <main>
+        <div class="card">
+            <div class="card-image">
+                <img src="src/images/gela.jpg" alt="gela" class="gela">
+            </div>
+            <div class="card-content">
+                <p class="card-title">
+                    Snacks<br> 
+                    rápidos<br> 
+                    para seu trabalho 
+                </p>
+
+                <a href="#products-card" class="card-button">Escolher produtos</a>
+            </div>
+        </div>
+    </main>
+
+    <div id="products-card" class="products-card">
+        <div class="products-card-content">
+            <h2 class="products-title">Produtos</h2>   
+            <div id="product-list" class="product-list"></div>
+        </div>
+    </div>
+
     <div id="cartSidebar" class="cart-sidebar">
         <div class="cart-header">
             <h3>Carrinho</h3>
             <button id="closeCart" class="close-cart">X</button>
         </div>
         <div class="cart-items">
-            <p><strong>Item 1:</strong> Produto Exemplo</p>
-            <p><strong>Item 2:</strong> Produto Exemplo</p>
-            <p><strong>Item 3:</strong> Produto Exemplo</p>
-            <!-- Aqui os itens do carrinho que vão ser colocados no
-             JavaScript -->
+            <div class="cart-item">
+            </div>
         </div>
         <div class="cart-footer">
-            <button class="pay-pix">Pagar via PIX</button>
+            <p id="totalPrice"><strong>Total: R$0"0,00</strong></p>
+            <p>Pagamento via Pix:</p>
+            <img src="" alt="QR Code Pix">
+            <button id="checkoutButton" class="checkout-button">Finalizar Compra</button>
         </div>
     </div>
-    </header>
-
-<main>
-
-  <div class="card">
-      <div class="card-image">
-          <img src="src/images/gela.jpg" alt="gela" class="gela">
-      </div>
-      <div class="card-content">
-          <p class="card-title">
-              Snacks<br> 
-              rápidos<br> 
-              para seu trabalho 
-          </p>
-
-          <a href="#products-card" class="card-button">Escolher produtos</a>
-      </div>
-  </div>
-</main>
-
-<main>
-    <div id="products-card" class="products-card">
-        <div class="products-card-content">
-            <h2 class="products-title">Produtos</h2>   
+    <div id="successModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Pagamento efetuado com sucesso</h2>
+            <div class="rating-section">
+                <h3>Avalie-nos</h3>
+                <div class="stars" id="stars">
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                </div>
+            </div>
+            <button id="closeModal" class="close-button">Voltar</button>
         </div>
     </div>
-</main>
 
-<!--html puxado do chatgpt--> 
-<main> 
-    <div class="products-list">
-        <div class="product-item">
-            <h4 class="product-name">Produto 1</h4>
-            <p class="product-price">R$10,00</p>
-            <button 
-                class="add-to-cart" 
-                data-id="1" 
-                data-name="Produto 1" 
-                data-price="10.00">
-                Adicionar ao Carrinho
-            </button>
-        </div>
-      <script src="src/JavaScript/itens.js"></script>
-    </div>
-    
-    <div id="cartSidebar" class="cart-sidebar">
-        <h3>Carrinho</h3>
-        <div class="cart-items">
-            <!-- Itens do carrinho serão adicionados dinamicamente -->
-        </div>
-        <p id="total">Total: R$0,00</p>
-        <button onclick="checkout()">Finalizar Compra</button>
-    </div>
-    
-</main>
-
-<script src="src/JavaScript/script.js"></script>
-
-
+    <script src="src/JavaScript/script.js"></script>
 </body>
 </html>

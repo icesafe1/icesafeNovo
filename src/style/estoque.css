@@ -15,9 +15,8 @@ body {
 }
 
 .logo {
-    
     width: 110px;
-    height: 110px;
+    height: auto;
 }
 
 
@@ -30,11 +29,11 @@ h1 {
 
 .qnt {   
     position: relative;
-    top: 150px;
+    top: 50px;
     left: 100px;
     width: 100%;
     max-width: 175px;
-    padding: 10px 15px;
+    padding: 100px 15px;
     font-size: 16px;
     color: #87CEEB;
     border: 2px solid #87CEEB;
@@ -43,8 +42,7 @@ h1 {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.qnt:focus {
-    border-color: #87CEEB;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+.text {
+    position: relative;
+    top: 75px;
 }
-

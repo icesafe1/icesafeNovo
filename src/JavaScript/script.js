@@ -1,9 +1,38 @@
 // Dados dos produtos
 const produtos = [
-    { id: 1, name: "torrada", price: 10.00, imgSrc: "src/images/torada.jpg" },
-    { id: 2, name: "Produto 2", price: 12.50, imgSrc: "src/images/snack2.jpg" },
-    { id: 3, name: "Produto 3", price: 15.00, imgSrc: "src/images/snack3.jpg" },
-    { id: 4, name: "Produto 4", price: 8.00, imgSrc: "src/images/snack4.jpg" }
+    { id: 1, name: "Torrada", price: 3.20, imgSrc: "src/images/torada.jpg" },
+    { id: 2, name: "Bolacha Bauducco", price: 2.50, imgSrc: "src/images/bolacha bauduco 2,50.jpg" },
+    { id: 3, name: "Tortuguita", price: 1.00, imgSrc: "src/images/tortuguita 1,00.jpg" },
+    { id: 4, name: "Azedinha", price: 1.50, imgSrc: "src/images/azedinha 1,50.jpeg" },
+    { id: 5, name: "Trento", price: 2.00, imgSrc: "src/images/trento 2,00.jpeg" },
+    { id: 6, name: "Bolo de pote", price: 10.00, imgSrc: "src/images/bolooooo.jpg" },
+    { id: 7, name: "Chocolate lolo", price: 2.00, imgSrc: "src/images/chocolate lolo 2,00.jpg" },
+    { id: 8, name: "Chocolate prestigio", price: 2.30, imgSrc: "src/images/chocolate prestigio 2,30.jpg" },
+    { id: 9, name: "Halls", price: 1.50, imgSrc: "src/images/halls 1,50.jpg" },
+    { id: 10, name: "Fine tubes", price: 1.50, imgSrc: "src/images/fini tubes 1,50.jpg" },
+    { id: 13, name: "Cup Noodles", price: 4.00, imgSrc: "src/images/cup.webp" },
+    { id: 14, name: "Cookies Bauducco", price: 2.50, imgSrc: "src/images/cokieee.jpeg" },
+    { id: 15, name: "Clube Social", price: 0.95, imgSrc: "src/images/club social 0,95.jpg" },
+    { id: 16, name: "Choquito", price: 2.40, imgSrc: "src/images/choquito 2,40.jpg" },
+    { id: 17, name: "Bis oreo", price: 2.50, imgSrc: "src/images/bis oreo 2,50.jpg" },
+    { id: 18, name: "Teens", price: 1.80, imgSrc: "src/images/teens 1,80.jpg" },
+    { id: 19, name: "Trident", price: 2.30, imgSrc: "src/images/trident 2,30.jpg" },
+    { id: 20, name: "Ouro branco", price: 1.50, imgSrc: "src/images/ouro branco 1,50.jpg" },
+    { id: 21, name: "Kit Kat", price: 3.90, imgSrc: "src/images/kit kat 3,90.jpg" },
+    { id: 22, name: "Empadinha", price: 6.00, imgSrc: "src/images/empadinha 6,00.jpg" },
+    { id: 23, name: "Mine fini", price: 1.00, imgSrc: "src/images/mini fini 1,00.jpg"},
+    { id: 24, name: "Freegls", price: 1.20, imgSrc: "src/images/freegels 1,20.jpg" },
+    { id: 25, name: "Barrinha de cereal", price: 1.40, imgSrc: "src/images/barrinha de cereal 1,40.jpg"},
+    { id: 26, name: "Água", price: 1.30, imgSrc: "src/images/agua 1,30.avif" },
+    { id: 27, name: "Coca-Cola", price: 1.80, imgSrc: "src/images/coca mini 1,80.jpeg" },
+    { id: 28, name: "Chá mate", price: 3.00, imgSrc: "src/images/cha mate gelado 3,00.jpeg" },
+    { id: 29, name: "Café", price: 6.50, imgSrc: "src/images/cafe tres corações 6,50.jpeg" },
+    { id: 30, name: "Cini", price: 1.29, imgSrc: "src/images/mini cine de framboesa 1,29.png" },
+    { id: 31, name: "Energético", price: 8.00, imgSrc: "src/images/monster 8,00.webp" },
+    { id: 32, name: "Showkinho", price: 1.00, imgSrc: "src/images/showkinho 1,00.jpeg" },
+    { id: 33, name: "Sprite", price: 4.00, imgSrc: "src/images/sprit 4,00.jpeg"},
+    { id: 34, name: "Power", price: 4.30, imgSrc: "src/images/power bebida 4,30.webp"},
+    
 ];
 
 // Variáveis do carrinho

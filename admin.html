@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/style/admin.css">
+    <title>Ice Safe</title>
+</head>
+<body>
+    <header class="header">
+        <img src="src/images/photo_5186302310366688534_x-removebg-preview (2).png" alt="Logo Ice Safe" class="logo">
+    </header>
+    
+    <main>
+        <div class="login-container">
+            <h1>Acesso ao Estoque</h1>
+            <form id="password-form">
+                <input type="password" id="password" placeholder="Digite a senha" class="password-input">
+                <button type="submit" class="submit-button">Entrar</button>
+            </form>
+            <p id="error-message" class="error-message"></p>
+        </div>
+    </main>
+
+    <script>
+        const form = document.getElementById('password-form');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('error-message');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault(); 
+            const password = passwordInput.value;
+            if (password === '123') {
+                window.location.href = 'estoque.html'; 
+            } else {
+                errorMessage.textContent = 'Senha incorreta. Tente novamente.';
+                passwordInput.value = ''; 
+            }
+        });
+    </script>
+</body>
+</html>

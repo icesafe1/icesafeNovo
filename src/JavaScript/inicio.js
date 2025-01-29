@@ -54,16 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Função para adicionar um produto ao carrinho
     window.addToCart = function(id) {
         const product = produtos.find(p => p.id === id);
-
         if (product && product.quantity > 0) {
-            // Decrementa a quantidade no estoque
             product.quantity -= 1;
-            // Adiciona o produto ao carrinho
             cartItems.push(product);
             updateCart();
-            // Atualiza o localStorage
             localStorage.setItem("produtos", JSON.stringify(produtos));
-            renderProductList(); // Re-renderiza a lista de produtos
+            renderProductList();
         } else {
             alert("Produto esgotado!");
         }
@@ -89,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
 
             cartContainer.appendChild(cartItem);
-            totalPrice += item.price;
+            totalPrice -= item.price;
         });
 
         totalPriceElement.innerHTML = `<strong>Total: R$ ${totalPrice.toFixed(2)}</strong>`;
@@ -100,8 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const removedItem = cartItems.splice(index, 1)[0];
         const product = produtos.find(p => p.id === removedItem.id);
         if (product) {
-            // Volta a quantidade do produto para o estoque
-            product.quantity += 1;
+            product.quantity == 0;
         }
         updateCart();
         localStorage.setItem("produtos", JSON.stringify(produtos));
@@ -115,11 +110,14 @@ document.addEventListener("DOMContentLoaded", () => {
         updateCart();  // Atualiza o carrinho na interface
         localStorage.setItem("produtos", JSON.stringify(produtos));  // Atualiza o estoque no localStorage
         alert("Compra finalizada!");  // Exibe uma mensagem de sucesso
+
+        // Limpa o localStorage do carrinho para evitar que itens antigos apareçam
+        localStorage.removeItem("cartItems");
     });
-    
 
     renderProductList(); // Inicializa a lista de produtos
 });
+
 document.addEventListener("DOMContentLoaded", () => {
     const openCartButton = document.getElementById('imageButton');  // Botão para abrir o carrinho
     const cartSidebar = document.getElementById('cartSidebar');  // O carrinho
@@ -176,3 +174,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+

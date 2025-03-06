@@ -141,7 +141,7 @@ body {
     display: inline-block;
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #265fa0;;
+    background-color: #265fa0;
     color: #e7ebee;
     font-size: 16px;
     text-decoration: none;
@@ -484,6 +484,32 @@ img {
       }
       
     
+    button {
+        background-color:#265fa0; 
+        color: white; 
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 5px;
+    }
     
+    button:hover {
+        background-color: #033264; 
+    }
+/**estrela***/
+.hidden {
+    display: none;
+}
 
-    
+.star {
+    font-size: 30px;
+    cursor: pointer;
+    color: gray;
+    transition: color 0.3s;
+}
+
+.star.rated {
+    color: gold;
+}
+   

@@ -16,20 +16,20 @@
         <div id="products-container" class="products-container"></div>
         <p id="totalSales">Total de vendas: 1R$ 0.00</p>
     </main>
-<!-- adicionar produto-->
- <!-- Botão para adicionar novo produto -->
-<button id="addProductButton">Adicionar Produto</button>
-
-<!-- Formulário de adição de produto (oculto inicialmente) -->
-<div id="addProductForm" class="hidden">
-    <input type="text" id="newProductName" placeholder="Nome do produto" />
-    <input type="number" id="newProductPrice" placeholder="Preço do produto" />
-    <input type="number" id="newProductQuantity" placeholder="Quantidade" />
-    <input type="file" id="newProductImage" />
-    <button id="saveProductButton">Salvar Produto</button>
-    <button id="cancelButton">Cancelar</button>
-</div>
-
+    <!-- Formulário de adição de produto (oculto inicialmente) -->
+    <div id="addProductForm">
+        <input type="text" id="newProductName" placeholder="Nome do produto" />
+        <input type="number" id="newProductPrice" placeholder="Preço do produto" />
+        <input type="number" id="newProductQuantity" placeholder="Quantidade" />
+        
+        <!-- Botão de upload de imagem -->
+        <button class="upload-button" onclick="document.getElementById('newProductImage').click();">
+            Escolher Imagem
+        </button>
+        <input type="file" id="newProductImage" accept="image/*" />
+        <button id="saveProductButton">Salvar Produto</button>
+        <button id="cancelButton">Cancelar</button>
+    </div>
 
     <script src="src/JavaScript/estoque.js"></script>
 </body>

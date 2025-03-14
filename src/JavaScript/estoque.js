@@ -1,6 +1,8 @@
-// Inicializar produtos no localStorage, ou um array vazio
+
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-let totalSales = 0;
+
+let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0;
+
 
 // Função para renderizar os produtos no estoque
 function renderProducts() {
@@ -11,22 +13,60 @@ function renderProducts() {
     produtos.forEach((product) => {
         const productDiv = document.createElement('div');
         productDiv.classList.add('product-card');
-        
+    
         productDiv.innerHTML = `
             <img src="${product.imgSrc}" alt="${product.name}">
             <h3>${product.name}</h3>
             <p>Preço: R$ ${product.price.toFixed(2)}</p>
             <p>Quantidade: <span id="quantity-${product.id}">${product.quantity}</span></p>
-            <button onclick="removeProduct(${product.id})">Excluir</button>
-            <button onclick="updateStock(${product.id}, 'add')">Adicionar ao estoque</button>
-            <button onclick="updateStock(${product.id}, 'remove')">Retirar do estoque</button>
-            <button onclick="editProduct(${product.id})">Editar</button>
+            <button class="remove-btn" data-id="${product.id}">Excluir</button>
+            <button class="add-stock-btn" data-id="${product.id}">Adicionar ao estoque</button>
+            
+            
         `;
-        
+       
+   function updateStock(id, action) {
+    const product = produtos.find((p) => p.id === id);
+    if (!product) return;
+
+    if (action === 'remove') {
+        if (product.quantity > 0) {
+            product.quantity -= 1;
+            totalSales += product.price;  
+            localStorage.setItem("totalSales", totalSales); 
+        } else {
+            alert("Estoque já está zerado!");
+            return;
+        }
+    } else if (action === 'add') {
+        product.quantity += 1;
+    }
+
+    renderProducts();
+    updateTotalSales();
+}
+
+    
         container.appendChild(productDiv);
     });
     
-    // Salva o estado do estoque no localStorage
+    
+    document.querySelectorAll(".add-stock-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const id = parseInt(button.getAttribute("data-id"));
+            updateStock(id, "add");
+        });
+    });
+    
+    document.querySelectorAll(".remove-stock-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const id = parseInt(button.getAttribute("data-id"));
+            updateStock(id, "remove");
+        });
+    });
+    
+    
+   
     localStorage.setItem("produtos", JSON.stringify(produtos));
 }
 
@@ -45,11 +85,6 @@ function updateStock(id, action) {
     updateTotalSales();
 }
 
-// Função para excluir um produto do estoque
-function removeProduct(id) {
-    produtos = produtos.filter(p => p.id !== id);
-    renderProducts();
-}
 
 // Exibir o total de vendas
 function updateTotalSales() {
@@ -57,39 +92,6 @@ function updateTotalSales() {
     if (salesElement) {
         salesElement.textContent = `Total de vendas: R$ ${totalSales.toFixed(2)}`;
     }
-}
-
-// Função para editar um produto
-function editProduct(id) {
-    const product = produtos.find(p => p.id === id);
-    if (!product) return;
-    
-    document.getElementById("newProductName").value = product.name;
-    document.getElementById("newProductPrice").value = product.price;
-    document.getElementById("newProductQuantity").value = product.quantity;
-    document.getElementById("saveProductButton").onclick = function () {
-        saveEditedProduct(id);
-    };
-    
-    document.getElementById("addProductForm").classList.remove("hidden");
-}
-
-// Função para salvar alterações no produto
-function saveEditedProduct(id) {
-    const product = produtos.find(p => p.id === id);
-    if (!product) return;
-    
-    product.name = document.getElementById("newProductName").value;
-    product.price = parseFloat(document.getElementById("newProductPrice").value);
-    product.quantity = parseInt(document.getElementById("newProductQuantity").value);
-    
-    const imageFile = document.getElementById("newProductImage").files[0];
-    if (imageFile) {
-        product.imgSrc = URL.createObjectURL(imageFile);
-    }
-    
-    renderProducts();
-    document.getElementById("addProductForm").classList.add("hidden");
 }
 
 // Função para adicionar um novo produto
@@ -115,8 +117,8 @@ function addProduct() {
     produtos.push(newProduct);
     renderProducts();
 
-    // Redireciona para a aba 'Início'
-    window.location.href = '#inicio'; // Ou o id da sua aba de início
+    
+    window.location.href = '#inicio'; 
 
     document.getElementById("addProductForm").classList.add("hidden");
 }
@@ -133,3 +135,14 @@ document.getElementById("saveProductButton").onclick = addProduct;
 // Renderizar os produtos ao carregar
 renderProducts();
 updateTotalSales();
+//desloga senha
+
+    // Verifique se o usuário está autenticado e se há a senha no localStorage ou sessionStorage
+    document.getElementById('sairButton').addEventListener('click', function() {
+        // Limpar dados de login (por exemplo, senha)
+        localStorage.removeItem('userPassword');  // ou sessionStorage.removeItem('userPassword');
+
+        // Redireciona o usuário para a página de login ou página inicial
+        window.location.href = 'inicio.html';
+    });
+

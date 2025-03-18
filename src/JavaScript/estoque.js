@@ -1,6 +1,6 @@
 // Inicializar produtos no localStorage, ou um array vazio
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-let totalSales = 0;
+let totalSales = parseFloat(localStorage.getItem('totalSales')) || 0;  // Carrega o total de vendas do localStorage
 
 // Função para renderizar os produtos no estoque
 function renderProducts() {
@@ -39,10 +39,10 @@ function updateStock(id, action) {
         product.quantity += 1;
     } else if (action === 'remove' && product.quantity > 0) {
         product.quantity -= 1;
-        totalSales += product.price;
+        totalSales += product.price;  // Atualiza o total de vendas ao retirar do estoque
     }
     renderProducts();
-    updateTotalSales();
+    updateTotalSales();  // Atualiza o total de vendas na interface
 }
 
 // Função para excluir um produto do estoque
@@ -57,6 +57,7 @@ function updateTotalSales() {
     if (salesElement) {
         salesElement.textContent = `Total de vendas: R$ ${totalSales.toFixed(2)}`;
     }
+    localStorage.setItem('totalSales', totalSales.toFixed(2));  // Salva o total de vendas no localStorage
 }
 
 // Função para editar um produto
@@ -133,3 +134,30 @@ document.getElementById("saveProductButton").onclick = addProduct;
 // Renderizar os produtos ao carregar
 renderProducts();
 updateTotalSales();
+
+// Função para finalizar a compra e atualizar o total de vendas
+document.getElementById('checkoutButton').addEventListener('click', () => {
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];  // Carregar o carrinho de compras
+
+    // Calcular o total das vendas da compra
+    cartItems.forEach(item => {
+        totalSales += item.price * item.quantity;  // Atualiza o total de vendas com a compra
+    });
+
+    // Limpar o carrinho após a compra
+    cartItems.length = 0;
+    updateCart();  // Atualiza a interface do carrinho
+
+    // Atualizar o estoque no localStorage
+    localStorage.setItem("produtos", JSON.stringify(produtos));  
+    localStorage.setItem('totalSales', totalSales.toFixed(2));  // Salva o total de vendas no localStorage
+
+    // Mostrar a mensagem de sucesso
+    alert("Compra finalizada!");
+
+    // Limpa o carrinho do localStorage para evitar que itens antigos apareçam
+    localStorage.removeItem("cartItems");
+
+    // Atualiza o total de vendas na interface
+    updateTotalSales();
+});

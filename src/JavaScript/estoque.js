@@ -23,28 +23,11 @@ function renderProducts() {
             <button class="add-stock-btn" data-id="${product.id}">Adicionar ao estoque</button>
             
             
-        `;
+        `
+         
+        
        
-   function updateStock(id, action) {
-    const product = produtos.find((p) => p.id === id);
-    if (!product) return;
-
-    if (action === 'remove') {
-        if (product.quantity > 0) {
-            product.quantity -= 1;
-            totalSales += product.price;  
-            localStorage.setItem("totalSales", totalSales); 
-        } else {
-            alert("Estoque já está zerado!");
-            return;
-        }
-    } else if (action === 'add') {
-        product.quantity += 1;
-    }
-
-    renderProducts();
-    updateTotalSales();
-}
+   
 
     
         container.appendChild(productDiv);

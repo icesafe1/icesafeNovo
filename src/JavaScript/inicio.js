@@ -47,19 +47,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Função para adicionar um produto ao carrinho
+   // Função para adicionar um produto ao carrinho
     window.addToCart = function(id) {
-        const product = produtos.find(p => p.id === id);
-        if (product && product.quantity > 0) {
-            product.quantity -= 1;
-            cartItems.push(product);
-            updateCart();
-            localStorage.setItem("produtos", JSON.stringify(produtos));
-            renderProductList();
-        } else {
-            alert("Produto esgotado!");
-        }
-    };
+    const product = produtos.find(p => p.id === id);
+    if (product && product.quantity > 0) {
+        product.quantity -= 1;
+        cartItems.push(product);
+        updateCart();
+        localStorage.setItem("produtos", JSON.stringify(produtos));
+        renderProductList();
+    } else {
+        alert("Produto esgotado!");
+    }
+};
+
 
     // Função para atualizar o carrinho de compras
     function updateCart() {
@@ -87,30 +88,42 @@ document.addEventListener("DOMContentLoaded", () => {
         totalPriceElement.innerHTML = `<strong>Total: R$ ${totalPrice.toFixed(2)}</strong>`;
     }
 
-    // Função para remover um produto do carrinho
-    window.removeFromCart = function(index) {
-        const removedItem = cartItems.splice(index, 1)[0];
-        const product = produtos.find(p => p.id === removedItem.id);
-        if (product) {
-            product.quantity == 0;
-        }
-        updateCart();
-        localStorage.setItem("produtos", JSON.stringify(produtos));
-        renderProductList();
-    };
+   // Função para remover um produto do carrinho
+ window.removeFromCart = function(index) {
+    const removedItem = cartItems.splice(index, 1)[0]; // Remove o item do carrinho
+    const product = produtos.find(p => p.id === removedItem.id); // Encontra o produto no estoque
 
-    // Função para limpar o carrinho
-    document.getElementById('checkoutButton').addEventListener('click', () => {
-        // Limpa o carrinho
-        cartItems.length = 0;
-        updateCart();  // Atualiza o carrinho na interface
-        localStorage.setItem("produtos", JSON.stringify(produtos));  // Atualiza o estoque no localStorage
-        alert("Compra finalizada!");  // Exibe uma mensagem de sucesso
+    if (product) {
+        // Incrementa 1 unidade ao estoque
+        product.quantity += 1; // Garante que apenas 1 unidade seja adicionada ao estoque
+    }
 
-        // Limpa o localStorage do carrinho para evitar que itens antigos apareçam
-        localStorage.removeItem("cartItems");
-    });
+    updateCart(); // Atualiza o carrinho
+    localStorage.setItem("produtos", JSON.stringify(produtos)); // Salva os produtos atualizados no localStorage
+    renderProductList(); // Renderiza a lista de produtos no estoque
+};
 
+
+   document.getElementById('checkoutButton').addEventListener('click', () => {
+    let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0;  // Obtém o total de vendas anterior
+    let cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0); // Calcula o total do carrinho
+    
+    totalSales += cartTotal;  // Soma com o total anterior
+
+    localStorage.setItem("totalSales", totalSales); // Atualiza no localStorage
+
+    updateTotalSales(); // Se existir essa função, ela deve atualizar a interface
+
+    // Limpa o carrinho
+    cartItems.length = 0;
+    updateCart();
+    localStorage.setItem("produtos", JSON.stringify(produtos));
+    alert("Compra finalizada!");
+
+    localStorage.removeItem("cartItems");
+});
+
+    
     renderProductList(); // Inicializa a lista de produtos
 });
 

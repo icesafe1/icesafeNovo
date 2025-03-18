@@ -291,13 +291,10 @@ body {
     cursor: pointer;
 }
 .checkout-button:hover {
-    background-color: #4d99e0;
+    background-color: #52e04d;
 }
 .close-cart {
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
+    
 }
 .remove-item{
     background-color: #6599bb;
@@ -513,3 +510,28 @@ img {
     color: gold;
 }
    
+.header-buttons {
+    display: flex;
+    justify-content: flex-start; /* Alinha o botão à esquerda */
+    align-items: center; /* Alinha o botão verticalmente ao centro (se necessário) */
+    width: 100%;
+}
+
+
+.inicio-button {
+    padding: 10px 20px;
+    background-color: #265fa0; 
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    position: relative;
+    left: 10; 
+}
+
+.inicio-button:hover {
+    background-color: #3c6da5;
+}

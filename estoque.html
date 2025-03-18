@@ -10,38 +10,45 @@
     <header class="header">
         <img src="src/images/photo_5186302310366688534_x-removebg-preview (2).png" alt="Logo Ice Safe" class="logo">
         <h1 class="title">ESTOQUE</h1>
+        <div class="sair">
+            <a href="login.html" class="button">SAIR</a>
+            
+           
+           
+        </div>
     </header>
 
-
-    <!-- inicio form -->
     <!-- Seção de "Início" -->
     <div id="inicio">
         <h1>Estoque de Produtos</h1>
         
-        <!-- Exibição do total de vendas -->
-        <p id="totalSales">Total de vendas: R$ 0.00</p>
-        
+      <!-- Exibição do total de vendas e botão sair -->
+      <div class="sales-container">
+       <p id="totalSales">Total de vendas: R$ 0.00</p>
+    
+      </div>
+
+
         <!-- Formulário de Adicionar Produto (inicialmente oculto) -->
-    <div id="addProductForm" class="hidden">
-        <h2>Adicionar/Editar Produto</h2>
-        <input type="text" id="newProductName" placeholder="Nome do produto" />
-        <input type="number" id="newProductPrice" placeholder="Preço do produto" />
-        <input type="number" id="newProductQuantity" placeholder="Quantidade" />
-        
-        <!-- Botão de upload de imagem -->
-        <button class="upload-button" onclick="document.getElementById('newProductImage').click();">
-            Escolher Imagem
-        </button>
-        <input type="file" id="newProductImage" accept="image/*" />
-        
-        <!-- Botões de salvar e cancelar -->
-        <button id="saveProductButton">Salvar Produto</button>
-        <button onclick="document.getElementById('addProductForm').classList.add('hidden');">Cancelar</button>
-    </div>
+        <div id="addProductForm" class="hidden">
+            <h2>Adicionar</h2>
+            <input type="text" id="newProductName" placeholder="Nome do produto" />
+            <input type="number" id="newProductPrice" placeholder="Preço do produto" />
+            <input type="number" id="newProductQuantity" placeholder="Quantidade" />
+            
+            <!-- Botão de upload de imagem -->
+            <button class="upload-button" onclick="document.getElementById('newProductImage').click();">
+                Escolher Imagem
+            </button>
+            <input type="file" id="newProductImage" accept="image/*" />
+            
+            <!-- Botões de salvar e cancelar -->
+            <button id="saveProductButton">Salvar Produto</button>
+            <button onclick="document.getElementById('addProductForm').classList.add('hidden');">Cancelar</button>
+        </div>
 
         <!-- Contêiner para os produtos -->
         <div id="products-container"></div>
-        
     </div>
 
     <!-- Botão para adicionar produto -->

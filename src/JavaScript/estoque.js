@@ -41,7 +41,7 @@ function renderProducts() {
         });
     });
     
-    document.querySelectorAll(".remove-stock-btn").forEach(button => {
+    document.querySelectorAll(".remove-btn").forEach(button => {
         button.addEventListener("click", () => {
             const id = parseInt(button.getAttribute("data-id"));
             updateStock(id, "remove");

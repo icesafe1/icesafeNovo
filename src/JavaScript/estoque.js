@@ -17,10 +17,10 @@ saveProductButton.addEventListener("click", async () => {
     const name = document.getElementById("newProductName").value;
     const price = parseFloat(document.getElementById("newProductPrice").value);
     const quantity = parseInt(document.getElementById("newProductQuantity").value);
-    const imageFile = document.getElementById("newProductImage").files[0];
+    
 
     if (!name || !price || !quantity || !imageFile) {
-        alert("Preencha todos os campos e selecione uma imagem.");
+        alert("Preencha todos os campos.");
         return;
     }
 
@@ -46,15 +46,7 @@ saveProductButton.addEventListener("click", async () => {
     }
 });
 
-// Converte uma imagem para Base64
-async function convertImageToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
-}
+
 
 // Função para carregar produtos do banco de dados
 async function carregarProdutos() {
@@ -206,35 +198,6 @@ function updateTotalSales() {
     localStorage.setItem('totalSales', totalSales.toFixed(2));  // Salva o total de vendas no localStorage
 }
 
-// Função para adicionar um novo produto
-function addProduct() {
-    const name = document.getElementById("newProductName").value;
-    const price = parseFloat(document.getElementById("newProductPrice").value);
-    const quantity = parseInt(document.getElementById("newProductQuantity").value);
-    const imageFile = document.getElementById("newProductImage").files[0];
-    
-    if (!name || isNaN(price) || isNaN(quantity)) {
-        alert('Preencha todos os campos corretamente.');
-        return;
-    }
-
-    const newProduct = {
-        id: produtos.length ? Math.max(...produtos.map(p => p.id)) + 1 : 1,
-        name,
-        price,
-        quantity,
-        imgSrc: imageFile ? URL.createObjectURL(imageFile) : 'src/images/default.jpg'
-    };
-
-    produtos.push(newProduct);
-    renderProducts();
-
-    
-    window.location.href = '#inicio'; 
-
-    document.getElementById("addProductForm").classList.add("hidden");
-}
-
 // Função para mostrar o formulário de adicionar produto
 function showAddProductForm() {
     document.getElementById("addProductForm").classList.remove("hidden");
@@ -253,13 +216,7 @@ updateTotalSales();
         const name = document.getElementById("newProductName").value;
         const price = parseFloat(document.getElementById("newProductPrice").value);
         const quantity = parseInt(document.getElementById("newProductQuantity").value);
-        const imageFile = document.getElementById("newProductImage").files[0];
-
-        if (!name || !price || !quantity || !imageFile) {
-            alert("Por favor, preencha todos os campos.");
-            return;
-        }
-
+       
         // Criação do objeto de novo produto
         const newProduct = {
             id: produtos.length + 1, // Gerando um novo ID
@@ -275,3 +232,4 @@ updateTotalSales();
         renderProducts(); // Re-renderiza os produtos
         addProductForm.classList.add("hidden"); // Esconde o formulário
     });
+    

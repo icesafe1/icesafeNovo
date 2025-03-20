@@ -139,6 +139,15 @@ carregarProdutos();
 
 
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+=======
+
+// Estoque e gerenciamento de produtos
+let produtos = JSON.parse(localStorage.getItem("produtos")) || [
+    { id: 1, name: "Torrada", price: 3.20, imgSrc: "src/images/torada.jpg", quantity: 5 },
+    { id: 2, name: "Bolacha Bauducco", price: 2.50, imgSrc: "src/images/bolacha bauduco 2,50.jpg", quantity: 5 },
+    { id: 3, name: "Tortuguita", price: 1.00, imgSrc: "src/images/tortuguita 1,00.jpg", quantity: 5 }
+];
+
 let totalSales = 0;
 
 // Função para renderizar os produtos no estoque
@@ -249,3 +258,32 @@ document.getElementById("saveProductButton").onclick = addProduct;
 // Renderizar os produtos ao carregar
 renderProducts();
 updateTotalSales();
+
+    // Salvar um novo produto
+    saveProductButton.addEventListener("click", () => {
+        const name = document.getElementById("newProductName").value;
+        const price = parseFloat(document.getElementById("newProductPrice").value);
+        const quantity = parseInt(document.getElementById("newProductQuantity").value);
+        const imageFile = document.getElementById("newProductImage").files[0];
+
+        if (!name || !price || !quantity || !imageFile) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
+
+        // Criação do objeto de novo produto
+        const newProduct = {
+            id: produtos.length + 1, // Gerando um novo ID
+            name: name,
+            price: price,
+            quantity: quantity,
+            imgSrc: URL.createObjectURL(imageFile) // Usando a URL do arquivo de imagem
+        };
+
+        // Adicionar o novo produto ao estoque
+        produtos.push(newProduct);
+        localStorage.setItem("produtos", JSON.stringify(produtos));
+        renderProducts(); // Re-renderiza os produtos
+        addProductForm.classList.add("hidden"); // Esconde o formulário
+    });
+});

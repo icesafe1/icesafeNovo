@@ -13,12 +13,18 @@
             <div class="logo">
                 <img src="src/images/photo_5186302310366688534_x-removebg-preview (2).png" alt="logo" class="logo">
             </div>
-            <button id="imageButton">
-                <img src="src/images/carrinho-removebg-preview.png" alt="Carrinho de compras" />
-            </button>
-            
+            <div class="header-buttons">
+                <!-- Botão do carrinho -->
+                <button id="imageButton">
+                    <img src="src/images/carrinho-removebg-preview.png" alt="Carrinho de compras" />
+                </button>
+
+                <!-- Botão Início que leva para o login -->
+                <a href="login.html" id="inicioButton" class="inicio-button">
+                    Início
+                </a>
+            </div>
         </div>
-        
     </header>
 
     <main>
@@ -60,31 +66,9 @@
             <img src="src/images/qrcode..jpg" alt="QR Code Pix">
             <button id="checkoutButton" class="checkout-button">Finalizar Compra</button>
         </div>
-        <div id="reviewModal" class="modal hidden">
-            <div class="modal-content">
-                <h2>Pagamento efetuado com sucesso!</h2>
-                <div class="rating-section">
-                    <h3>Avalie-nos</h3>
-                    <div class="stars" id="stars">
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="2">&#9733;</span>
-                        <span class="star" data-value="3">&#9733;</span>
-                        <span class="star" data-value="4">&#9733;</span>
-                        <span class="star" data-value="5">&#9733;</span>
-                    </div>
-                </div>
-                <button id="closeModal" class="close-button">Voltar</button>
-            </div>
-        </div>
-        
-            
-        </div>
-    </div>
     </div>
 
     <script src="src/JavaScript/inicio.js"></script>
     <script src="src/JavaScript/estoque.js"></script> 
 </body>
 </html>
-
-

@@ -1,3 +1,145 @@
+export const estoque = {
+    API_BASE_URL:'api/https://localhost:7223'
+};
+
+// Seleciona os elementos do DOM
+const addProductForm = document.getElementById("addProductForm");
+const addProductButton = document.getElementById("addProductButton");
+const saveProductButton = document.getElementById("saveProductButton");
+const productsContainer = document.getElementById("products-container");
+
+// Exibir o formulário ao clicar no botão "Adicionar Produto"
+addProductButton.addEventListener("click", () => {
+    addProductForm.classList.remove("hidden");
+});
+
+// Captura os dados do formulário e envia para a API
+saveProductButton.addEventListener("click", async () => {
+    const name = document.getElementById("newProductName").value;
+    const price = parseFloat(document.getElementById("newProductPrice").value);
+    const quantity = parseInt(document.getElementById("newProductQuantity").value);
+    const imageFile = document.getElementById("newProductImage").files[0];
+
+    if (!name || !price || !quantity || !imageFile) {
+        alert("Preencha todos os campos e selecione uma imagem.");
+        return;
+    }
+
+    // Converte a imagem para Base64
+    const imgSrc = await convertImageToBase64(imageFile);
+
+    const newProduct = { name, price, quantity, imgSrc };
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/adicionar`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newProduct),
+        });
+
+        if (!response.ok) throw new Error("Erro ao adicionar produto");
+
+        alert("Produto adicionado com sucesso!");
+        addProductForm.classList.add("hidden"); // Esconde o formulário
+        carregarProdutos(); // Atualiza a lista de produtos
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+// Converte uma imagem para Base64
+async function convertImageToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+
+// Função para carregar produtos do banco de dados
+async function carregarProdutos() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/listar`);
+        if (!response.ok) throw new Error("Erro ao carregar produtos");
+
+        const produtos = await response.json();
+        productsContainer.innerHTML = ""; // Limpa o container antes de adicionar
+
+        produtos.forEach(product => {
+            const productDiv = document.createElement("div");
+            productDiv.classList.add("product-card");
+
+            productDiv.innerHTML = `
+                <img src="${product.imgSrc}" alt="${product.name}" class="product-image">
+                <h3>${product.name}</h3>
+                <p>Preço: R$ ${product.price.toFixed(2)}</p>
+                <p>Quantidade: <span>${product.quantity}</span></p>
+                <button class="remove-stock-btn" data-id="${product.id}">Excluir</button>
+                <button class="add-stock-btn" data-id="${product.id}">Adicionar Estoque</button>
+            `;
+
+            productsContainer.appendChild(productDiv);
+        });
+
+        adicionarEventosBotoes();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Função para adicionar eventos aos botões
+function adicionarEventosBotoes() {
+    document.querySelectorAll(".remove-stock-btn").forEach(button => {
+        button.addEventListener("click", async () => {
+            const id = button.getAttribute("data-id");
+            await removerProduto(id);
+        });
+    });
+
+    document.querySelectorAll(".add-stock-btn").forEach(button => {
+        button.addEventListener("click", async () => {
+            const id = button.getAttribute("data-id");
+            await adicionarAoEstoque(id);
+        });
+    });
+}
+
+// Função para remover um produto
+async function removerProduto(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/remover/${id}`, { method: "DELETE" });
+
+        if (!response.ok) throw new Error("Erro ao remover produto");
+
+        alert("Produto removido!");
+        carregarProdutos(); // Atualiza a lista de produtos
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Função para adicionar ao estoque
+async function adicionarAoEstoque(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/estoque/${id}`, { method: "PATCH" });
+
+        if (!response.ok) throw new Error("Erro ao adicionar ao estoque");
+
+        alert("Estoque atualizado!");
+        carregarProdutos(); // Atualiza a lista de produtos
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Carregar os produtos ao abrir a página
+carregarProdutos();
+
+
+
+let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+=======
 
 // Estoque e gerenciamento de produtos
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [
@@ -5,6 +147,7 @@ let produtos = JSON.parse(localStorage.getItem("produtos")) || [
     { id: 2, name: "Bolacha Bauducco", price: 2.50, imgSrc: "src/images/bolacha bauduco 2,50.jpg", quantity: 5 },
     { id: 3, name: "Tortuguita", price: 1.00, imgSrc: "src/images/tortuguita 1,00.jpg", quantity: 5 }
 ];
+
 let totalSales = 0;
 
 // Função para renderizar os produtos no estoque
@@ -16,48 +159,54 @@ function renderProducts() {
     produtos.forEach((product) => {
         const productDiv = document.createElement('div');
         productDiv.classList.add('product-card');
-        
+    
         productDiv.innerHTML = `
             <img src="${product.imgSrc}" alt="${product.name}">
             <h3>${product.name}</h3>
             <p>Preço: R$ ${product.price.toFixed(2)}</p>
             <p>Quantidade: <span id="quantity-${product.id}">${product.quantity}</span></p>
-            <button onclick="removeProduct(${product.id})">Excluir</button>
-            <button onclick="updateStock(${product.id}, 'add')">Adicionar ao estoque</button>
-            <button onclick="updateStock(${product.id}, 'remove')">Retirar do estoque</button>
-        `;
+            <button class="remove-btn" data-id="${product.id}">Excluir</button>
+            <button class="add-stock-btn" data-id="${product.id}">Adicionar ao estoque</button>
         
+        `
         container.appendChild(productDiv);
     });
     
+    
+    document.querySelectorAll(".add-stock-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const id = parseInt(button.getAttribute("data-id"));
+            updateStock(id, "add");
+        });
+    });
+    
+    document.querySelectorAll(".remove-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const id = parseInt(button.getAttribute("data-id"));
+            updateStock(id, "remove");
+        });
+    });
+    
+    
+   
     localStorage.setItem("produtos", JSON.stringify(produtos));
 }
 
 // Função para atualizar o estoque
 function updateStock(id, action) {
     const product = produtos.find((p) => p.id === id);
-    
     if (!product) return;
 
     if (action === 'add') {
         product.quantity += 1;
     } else if (action === 'remove' && product.quantity > 0) {
         product.quantity -= 1;
-        totalSales += product.price;
+        totalSales += product.price;  // Atualiza o total de vendas ao retirar do estoque
     }
-
     renderProducts();
-    updateTotalSales();
+    updateTotalSales();  // Atualiza o total de vendas na interface
 }
 
-// Função para excluir um produto do estoque
-function removeProduct(id) {
-    const index = produtos.findIndex((p) => p.id === id);
-    if (index !== -1 ) {
-        produtos.splice(index, 1);
-        renderProducts();
-    }
-}
 
 // Exibir o total de vendas
 function updateTotalSales() {
@@ -65,117 +214,50 @@ function updateTotalSales() {
     if (salesElement) {
         salesElement.textContent = `Total de vendas: R$ ${totalSales.toFixed(2)}`;
     }
+    localStorage.setItem('totalSales', totalSales.toFixed(2));  // Salva o total de vendas no localStorage
 }
+
+// Função para adicionar um novo produto
+function addProduct() {
+    const name = document.getElementById("newProductName").value;
+    const price = parseFloat(document.getElementById("newProductPrice").value);
+    const quantity = parseInt(document.getElementById("newProductQuantity").value);
+    const imageFile = document.getElementById("newProductImage").files[0];
+    
+    if (!name || isNaN(price) || isNaN(quantity)) {
+        alert('Preencha todos os campos corretamente.');
+        return;
+    }
+
+    const newProduct = {
+        id: produtos.length ? Math.max(...produtos.map(p => p.id)) + 1 : 1,
+        name,
+        price,
+        quantity,
+        imgSrc: imageFile ? URL.createObjectURL(imageFile) : 'src/images/default.jpg'
+    };
+
+    produtos.push(newProduct);
+    renderProducts();
+
+    
+    window.location.href = '#inicio'; 
+
+    document.getElementById("addProductForm").classList.add("hidden");
+}
+
+// Função para mostrar o formulário de adicionar produto
+function showAddProductForm() {
+    document.getElementById("addProductForm").classList.remove("hidden");
+}
+
+// Vincular o botão de adicionar produto ao formulário
+document.getElementById("addProductButton").onclick = showAddProductForm;
+document.getElementById("saveProductButton").onclick = addProduct;
 
 // Renderizar os produtos ao carregar
 renderProducts();
 updateTotalSales();
-
-// Carrinho de compras
-document.addEventListener("DOMContentLoaded", () => {
-    const cartItems = [];
-    const totalPriceElement = document.getElementById("totalPrice");
-    const productList = document.getElementById("product-list");
-
-    // Função para renderizar a lista de produtos no carrinho
-    function renderProductList() {
-        productList.innerHTML = "";
-        produtos.forEach((product) => {
-            const productCard = document.createElement("div");
-            productCard.classList.add("product-card");
-
-            productCard.innerHTML = `
-                <img src="${product.imgSrc}" alt="${product.name}">
-                <h3>${product.name}</h3>
-                <p>Preço: R$ ${product.price.toFixed(2)}</p>
-                <p>Disponível: ${product.quantity}</p>
-                <button onclick="addToCart(${product.id})">Adicionar ao carrinho</button>
-            `;
-
-            productList.appendChild(productCard);
-        });
-    }
-
-    // Função para adicionar um produto ao carrinho
-    window.addToCart = function(id) {
-        const product = produtos.find(p => p.id === id);
-
-        if (product && product.quantity > 0) {
-            product.quantity -= 1;
-            cartItems.push(product);
-            updateCart();
-            localStorage.setItem("produtos", JSON.stringify(produtos));
-            renderProductList();
-        } else {
-            alert("Produto esgotado!");
-        }
-    };
-
-    // Função para atualizar o carrinho de compras
-    function updateCart() {
-        const cartContainer = document.querySelector(".cart-items");
-        cartContainer.innerHTML = "";
-
-        let totalPrice = 0;
-
-        if (cartItems.length === 0) {
-            cartContainer.innerHTML = "<p>Carrinho vazio</p>";
-        }
-
-        cartItems.forEach((item, index) => {
-            const cartItem = document.createElement("div");
-            cartItem.classList.add("cart-item");
-
-            cartItem.innerHTML = `
-                <p>${item.name} - R$ ${item.price.toFixed(2)}</p>
-                <button onclick="removeFromCart(${index})">Remover</button>
-            `;
-
-            cartContainer.appendChild(cartItem);
-            totalPrice += item.price;
-        });
-
-        totalPriceElement.innerHTML = `<strong>Total: R$ ${totalPrice.toFixed(2)}</strong>`;
-    }
-
-    // Função para remover um produto do carrinho
-    window.removeFromCart = function(index) {
-        const removedItem = cartItems.splice(index, 1)[0];
-        const product = produtos.find(p => p.id === removedItem.id);
-        if (product) {
-            product.quantity += 1;
-        }
-        updateCart();
-        localStorage.setItem("produtos", JSON.stringify(produtos));
-        renderProductList();
-    };
-
-    // Função para limpar o carrinho
-    window.clearCart = function() {
-        cartItems.length = 0;
-        updateCart();
-        alert("Carrinho limpo!");
-    };
-
-    renderProductList();
-});
-//produto
-document.addEventListener("DOMContentLoaded", () => {
-    // Obter elementos do DOM
-    const addProductButton = document.getElementById("addProductButton");
-    const addProductForm = document.getElementById("addProductForm");
-    const saveProductButton = document.getElementById("saveProductButton");
-    const cancelButton = document.getElementById("cancelButton");
-
-    // Mostrar o formulário de adição
-    addProductButton.addEventListener("click", () => {
-        addProductForm.classList.remove("hidden");
-    });
-
-    // Cancelar a adição de produto
-    cancelButton.addEventListener("click", () => {
-        addProductForm.classList.add("hidden");
-    });
 
     // Salvar um novo produto
     saveProductButton.addEventListener("click", () => {

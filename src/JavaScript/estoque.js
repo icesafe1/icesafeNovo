@@ -139,9 +139,7 @@ carregarProdutos();
 
 
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-
-let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0;
-
+let totalSales = 0;
 
 // Função para renderizar os produtos no estoque
 function renderProducts() {
@@ -194,10 +192,10 @@ function updateStock(id, action) {
         product.quantity += 1;
     } else if (action === 'remove' && product.quantity > 0) {
         product.quantity -= 1;
-        totalSales += product.price;
+        totalSales += product.price;  // Atualiza o total de vendas ao retirar do estoque
     }
     renderProducts();
-    updateTotalSales();
+    updateTotalSales();  // Atualiza o total de vendas na interface
 }
 
 
@@ -207,6 +205,7 @@ function updateTotalSales() {
     if (salesElement) {
         salesElement.textContent = `Total de vendas: R$ ${totalSales.toFixed(2)}`;
     }
+    localStorage.setItem('totalSales', totalSales.toFixed(2));  // Salva o total de vendas no localStorage
 }
 
 // Função para adicionar um novo produto
@@ -250,14 +249,3 @@ document.getElementById("saveProductButton").onclick = addProduct;
 // Renderizar os produtos ao carregar
 renderProducts();
 updateTotalSales();
-//desloga senha
-
-    // Verifique se o usuário está autenticado e se há a senha no localStorage ou sessionStorage
-    document.getElementById('sairButton').addEventListener('click', function() {
-        // Limpar dados de login (por exemplo, senha)
-        localStorage.removeItem('userPassword');  // ou sessionStorage.removeItem('userPassword');
-
-        // Redireciona o usuário para a página de login ou página inicial
-        window.location.href = 'inicio.html';
-    });
-

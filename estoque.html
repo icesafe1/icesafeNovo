@@ -31,23 +31,21 @@
             <input type="text" id="newProductName" placeholder="Nome do produto" />
             <input type="number" id="newProductPrice" placeholder="Preço do produto" />
             <input type="number" id="newProductQuantity" placeholder="Quantidade" />
-            
-            <!-- Botão de upload de imagem kkkkkkkkkkkkkk-->
-            <input type="text" id="imageUrl" placeholder="Insira o URL da imagem" />
+            <form id="uploadForm">
+                <input type="text" id="imgLink" placeholder="Insira a URL da imagem">
+                <button type="submit">Enviar</button>
+            </form>
             <!-- Botões de salvar e cancelar -->
-            <button id="saveProductButton">Salvar Produto</button>
             <button onclick="document.getElementById('addProductForm').classList.add('hidden');">Cancelar</button>
         </div>
-
         <!-- Contêiner para os produtos -->
         <div id="products-container">
-
         </div>
     </div>
 
     <!-- Botão para adicionar produto -->
     <button id="addProductButton">Adicionar Produto</button>
 
-    <script src="src/JavaScript/estoque.js"></script>
+           <script src="src/JavaScript/estoque.js"></script>
 </body>
 </html>

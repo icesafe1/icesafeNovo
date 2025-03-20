@@ -1,6 +1,5 @@
-export const estoque = {
-    API_BASE_URL:'api/https://localhost:7223'
-};
+ const API_BASE_URL = 'https://localhost:7223/api';
+
 
 // Seleciona os elementos do DOM
 const addProductForm = document.getElementById("addProductForm");
@@ -60,7 +59,7 @@ async function convertImageToBase64(file) {
 // Função para carregar produtos do banco de dados
 async function carregarProdutos() {
     try {
-        const response = await fetch(`${API_BASE_URL}/listar`);
+        const response = await fetch(`${API_BASE_URL}/Produto'`);
         if (!response.ok) throw new Error("Erro ao carregar produtos");
 
         const produtos = await response.json();
@@ -122,7 +121,7 @@ async function removerProduto(id) {
 // Função para adicionar ao estoque
 async function adicionarAoEstoque(id) {
     try {
-        const response = await fetch(`${API_BASE_URL}/estoque/${id}`, { method: "PATCH" });
+        const response = await fetch(`${API_BASE_URL}/Editar/${id}`, { method: "PUT" });
 
         if (!response.ok) throw new Error("Erro ao adicionar ao estoque");
 

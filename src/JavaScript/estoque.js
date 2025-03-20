@@ -138,16 +138,6 @@ carregarProdutos();
 
 
 
-let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-=======
-
-// Estoque e gerenciamento de produtos
-let produtos = JSON.parse(localStorage.getItem("produtos")) || [
-    { id: 1, name: "Torrada", price: 3.20, imgSrc: "src/images/torada.jpg", quantity: 5 },
-    { id: 2, name: "Bolacha Bauducco", price: 2.50, imgSrc: "src/images/bolacha bauduco 2,50.jpg", quantity: 5 },
-    { id: 3, name: "Tortuguita", price: 1.00, imgSrc: "src/images/tortuguita 1,00.jpg", quantity: 5 }
-];
-
 let totalSales = 0;
 
 // Função para renderizar os produtos no estoque
@@ -286,4 +276,3 @@ updateTotalSales();
         renderProducts(); // Re-renderiza os produtos
         addProductForm.classList.add("hidden"); // Esconde o formulário
     });
-});

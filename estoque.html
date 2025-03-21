@@ -24,28 +24,32 @@
        <p id="totalSales">Total de vendas: R$ 0.00</p>
       </div>
 
+<!-- Formulário de Adicionar Produto (inicialmente oculto) -->
+    <div id="addProductForm" class="hidden">
+    <h2>Adicionar Produto</h2>
+    <input type="text" id="newProductName" placeholder="Nome do produto" />
+    <input type="number" id="newProductPrice" placeholder="Preço do produto" />
+    <input type="number" id="newProductQuantity" placeholder="Quantidade" />
+    
+    <form id="uploadForm">
+        <input type="text" id="imgLink" placeholder="Insira a URL da imagem">
+        <button type="submit">Enviar</button>
+    </form>
 
-        <!-- Formulário de Adicionar Produto (inicialmente oculto) -->
-        <div id="addProductForm" class="hidden">
-            <h2>Adicionar</h2>
-            <input type="text" id="newProductName" placeholder="Nome do produto" />
-            <input type="number" id="newProductPrice" placeholder="Preço do produto" />
-            <input type="number" id="newProductQuantity" placeholder="Quantidade" />
-            <form id="uploadForm">
-                <input type="text" id="imgLink" placeholder="Insira a URL da imagem">
-                <button type="submit">Enviar</button>
-            </form>
-            <!-- Botões de salvar e cancelar -->
-            <button onclick="document.getElementById('addProductForm').classList.add('hidden');">Cancelar</button>
-        </div>
-        <!-- Contêiner para os produtos -->
-        <div id="products-container">
-        </div>
-    </div>
+    <div id="message"></div>
+    
+    <!-- Botões de salvar e cancelar -->
+    <button id="cancelButton">Cancelar</button>
+    <button id="saveProductButton">Salvar Produto</button>
 
-    <!-- Botão para adicionar produto -->
-    <button id="addProductButton">Adicionar Produto</button>
+</div>
 
-           <script src="src/JavaScript/estoque.js"></script>
+
+<!-- Botão para adicionar produto -->
+<button id="addProductButton">Adicionar Produto</button>
+<!-- Contêiner para os produtos -->
+<div id="products-container"></div>
+
+<script src="src/JavaScript/estoque.js"></script>
 </body>
 </html>

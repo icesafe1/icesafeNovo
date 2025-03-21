@@ -1,285 +1,83 @@
- const API_BASE_URL = 'https://localhost:7223/api';
+const API_BASE_URL = 'https://localhost:7223/api';
 
+// Garantir que o código só execute após o DOM estar carregado
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ DOM totalmente carregado!");
 
-// Seleciona os elementos do DOM
-const addProductForm = document.getElementById("addProductForm");
-const addProductButton = document.getElementById("addProductButton");
-const saveProductButton = document.getElementById("saveProductButton");
-const productsContainer = document.getElementById("products-container");
+    // Seleciona os elementos do DOM
+    const addProductForm = document.getElementById("addProductForm");
+    const addProductButton = document.getElementById("addProductButton");
+    const saveProductButton = document.getElementById("saveProductButton");
 
-// Exibir o formulário ao clicar no botão "Adicionar Produto"
-addProductButton.addEventListener("click", () => {
-    addProductForm.classList.remove("hidden");
-});
-
-// Captura os dados do formulário e envia para a API
-    saveProductButton.addEventListener("click", async () => );
-    const name = document.getElementById("newProductName").value;
-    const price = parseFloat(document.getElementById("newProductPrice").value);
-    const quantity = parseInt(document.getElementById("newProductQuantity").value);
-    
-
-    if (!name || !price || !quantity || !imageFile) {
-        alert("Preencha todos os campos.");
+    // Verificação se os elementos existem no DOM
+    if (!addProductForm || !addProductButton || !saveProductButton) {
+        console.error("❌ ERRO: Um ou mais elementos não foram encontrados!");
         return;
     }
-    document.addEventListener("DOMContentLoaded", function () {
-        console.log("DOM totalmente carregado!");
-    
-        const form = document.getElementById("uploadForm");
-    
-        if (!form) {
-            console.error("❌ ERRO: Elemento #uploadForm não encontrado!");
-            return;
-        }
-    
-        console.log("✅ Formulário encontrado!", form);
-    
-        form.addEventListener("submit", function (event) {
-            event.preventDefault();
-            console.log("📝 Formulário enviado!");
-    
-            const imgLink = document.getElementById("imgLink").value;
-            console.log("🔗 URL da imagem:", imgLink);
-    
-            fetch("/api/imagelinks", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ImgLink: imgLink }),
-            })
-                .then((response) => {
-                    if (!response.ok) throw new Error("Network response was not ok");
-                    return response.json();
-                })
-                .then((data) => {
-                    console.log("✅ Resposta do servidor:", data);
-                    document.getElementById("message").textContent =
-                        "Image link saved successfully!";
-                })
-                .catch((error) => {
-                    console.error("❌ Erro no fetch:", error);
-                    document.getElementById("message").textContent =
-                        "Erro ao salvar a imagem: " + error.message;
-                });
-        });
-    
-        // 🔥 Função para adicionar produto corretamente
-        async function adicionarProduto(name, price, quantity, imgSrc) {
-            const API_BASE_URL = "/api"; // Ajuste a URL conforme necessário
-            const newProduct = { name, price, quantity, imgSrc };
-    
-            try {
-                const response = await fetch(`${API_BASE_URL}/adicionar`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(newProduct),
-                });
-    
-                if (!response.ok) throw new Error("Erro ao adicionar produto");
-    
-                alert("Produto adicionado com sucesso!");
-                document.getElementById("addProductForm").classList.add("hidden"); // Esconde o formulário
-                carregarProdutos(); // Atualiza a lista de produtos
-            } catch (error) {
-                console.error("❌ Erro ao adicionar produto:", error);
-            }
-        }
-    
-        // 🔥 Função para carregar produtos do banco de dados
-        async function carregarProdutos() {
-            const API_BASE_URL = "/api"; // Ajuste a URL conforme necessário
-            const productsContainer = document.getElementById("productsContainer");
-    
-            if (!productsContainer) {
-                console.error("❌ ERRO: Elemento #productsContainer não encontrado!");
-                return;
-            }
-    
-            try {
-                const response = await fetch(`${API_BASE_URL}/Produto`);
-                if (!response.ok) throw new Error("Erro ao carregar produtos");
-    
-                const produtos = await response.json();
-                productsContainer.innerHTML = ""; // Limpa o container antes de adicionar
-    
-                produtos.forEach((product) => {
-                    const productDiv = document.createElement("div");
-                    productDiv.classList.add("product-card");
-    
-                    productDiv.innerHTML = `
-                        <img src="${product.imgSrc}" alt="${product.name}" class="product-image">
-                        <h3>${product.name}</h3>
-                        <p>Preço: R$ ${product.price.toFixed(2)}</p>
-                        <p>Quantidade: <span>${product.quantity}</span></p>
-                        <button class="remove-stock-btn" data-id="${product.id}">Excluir</button>
-                        <button class="add-stock-btn" data-id="${product.id}">Adicionar Estoque</button>
-                    `;
-    
-                    productsContainer.appendChild(productDiv);
-                });
-    
-                console.log("✅ Produtos carregados com sucesso!");
-            } catch (error) {
-                console.error("❌ Erro ao carregar produtos:", error);
-            }
-        }
-    
-        // Chama carregarProdutos ao carregar a página
-        carregarProdutos();
-    });
-    
-  
 
-// Função para adicionar eventos aos botões
-function adicionarEventosBotoes() {
-    document.querySelectorAll(".remove-stock-btn").forEach(button => {
-        button.addEventListener("click", async () => {
-            const id = button.getAttribute("data-id");
-            await removerProduto(id);
-        });
+    // Exibir o formulário ao clicar no botão "Adicionar Produto"
+    addProductButton.addEventListener("click", () => {
+        addProductForm.classList.remove("hidden");
     });
 
-    document.querySelectorAll(".add-stock-btn").forEach(button => {
-        button.addEventListener("click", async () => {
-            const id = button.getAttribute("data-id");
-            await adicionarAoEstoque(id);
-        });
-    });
-}
-
-// Função para remover um produto
-async function removerProduto(id) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/remover/${id}`, { method: "DELETE" });
-
-        if (!response.ok) throw new Error("Erro ao remover produto");
-
-        alert("Produto removido!");
-        carregarProdutos(); // Atualiza a lista de produtos
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-// Função para adicionar ao estoque
-async function adicionarAoEstoque(id) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/Editar/${id}`, { method: "PUT" });
-
-        if (!response.ok) throw new Error("Erro ao adicionar ao estoque");
-
-        alert("Estoque atualizado!");
-        carregarProdutos(); // Atualiza a lista de produtos
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-// Carregar os produtos ao abrir a página
-carregarProdutos();
-
-
-
-let totalSales = 0;
-
-// Função para renderizar os produtos no estoque
-function renderProducts() {
-    const container = document.getElementById('products-container');
-    if (!container) return;
-    container.innerHTML = '';
-    
-    produtos.forEach((product) => {
-        const productDiv = document.createElement('div');
-        productDiv.classList.add('product-card');
-    
-        productDiv.innerHTML = `
-            <img src="${product.imgSrc}" alt="${product.name}">
-            <h3>${product.name}</h3>
-            <p>Preço: R$ ${product.price.toFixed(2)}</p>
-            <p>Quantidade: <span id="quantity-${product.id}">${product.quantity}</span></p>
-            <button class="remove-btn" data-id="${product.id}">Excluir</button>
-            <button class="add-stock-btn" data-id="${product.id}">Adicionar ao estoque</button>
-        
-        `
-        container.appendChild(productDiv);
-    });
-    
-    
-    document.querySelectorAll(".add-stock-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            const id = parseInt(button.getAttribute("data-id"));
-            updateStock(id, "add");
-        });
-    });
-    
-    document.querySelectorAll(".remove-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            const id = parseInt(button.getAttribute("data-id"));
-            updateStock(id, "remove");
-        });
-    });
-    
-    
-   
-    localStorage.setItem("produtos", JSON.stringify(produtos));
-}
-
-// Função para atualizar o estoque
-function updateStock(id, action) {
-    const product = produtos.find((p) => p.id === id);
-    if (!product) return;
-
-    if (action === 'add') {
-        product.quantity += 1;
-    } else if (action === 'remove' && product.quantity > 0) {
-        product.quantity -= 1;
-        totalSales += product.price;  // Atualiza o total de vendas ao retirar do estoque(resolver mais tarde)
-    }
-    renderProducts();
-    updateTotalSales();  // Atualiza o total de vendas na interface
-}
-
-
-// Exibir o total de vendas
-function updateTotalSales() {
-    const salesElement = document.getElementById('totalSales');
-    if (salesElement) {
-        salesElement.textContent = `Total de vendas: R$ ${totalSales.toFixed(2)}`;
-    }
-    localStorage.setItem('totalSales', totalSales.toFixed(2));  // Salva o total de vendas no localStorage
-}
-
-// Função para mostrar o formulário de adicionar produto
-function showAddProductForm() {
-    document.getElementById("addProductForm").classList.remove("hidden");
-}
-
-// Vincular o botão de adicionar produto ao formulário
-document.getElementById("addProductButton").onclick = showAddProductForm;
-document.getElementById("saveProductButton").onclick = addProduct;
-
-// Renderizar os produtos ao carregar
-renderProducts();
-updateTotalSales();
-
-    // Salvar um novo produto
-    saveProductButton.addEventListener("click", () => {
+    // Captura os dados do formulário de produto e envia para a API
+    saveProductButton.addEventListener("click", async () => {
         const name = document.getElementById("newProductName").value;
         const price = parseFloat(document.getElementById("newProductPrice").value);
         const quantity = parseInt(document.getElementById("newProductQuantity").value);
-       
-        // Criação do objeto de novo produto
-        const newProduct = {
-            id: produtos.length + 1, // Gerando um novo ID
-            name: name,
-            price: price,
-            quantity: quantity,
-            imgSrc: URL.createObjectURL(imageFile) // Usando a URL do arquivo de imagem
-        };
+        const imageFile = document.getElementById("newProductImage").files[0];
 
-        // Adicionar o novo produto ao estoque
-        produtos.push(newProduct);
-        localStorage.setItem("produtos", JSON.stringify(produtos));
-        renderProducts(); // Re-renderiza os produtos
-        addProductForm.classList.add("hidden"); // Esconde o formulário
+        if (!name || !price || !quantity || !imageFile) {
+            alert("Preencha todos os campos.");
+            return;
+        }
+
+        // Criação de um FormData para enviar a imagem junto com os dados
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("price", price);
+        formData.append("quantity", quantity);
+        formData.append("image", imageFile);
+
+        try {
+            // Primeiro, salva o produto (sem o link da imagem)
+            const productResponse = await fetch(`${API_BASE_URL}/produto/Adicionar`, {
+                method: "POST",
+                body: JSON.stringify({
+                    Nome: name,
+                    Preco: price,
+                    Quantidade: quantity
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!productResponse.ok) {
+                throw new Error("Erro ao adicionar produto");
+            }
+
+            const productData = await productResponse.json();
+
+            // Agora que o produto foi adicionado, vamos adicionar o link da imagem
+            const imgLink = "url-da-imagem";  // O link da imagem pode ser gerado após o upload
+            const imageLinkResponse = await fetch(`${API_BASE_URL}/produto/imagelinks`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ImgLink: imgLink }),
+            });
+
+            if (!imageLinkResponse.ok) {
+                throw new Error("Erro ao salvar o link da imagem");
+            }
+
+            const imageLinkData = await imageLinkResponse.json();
+            console.log("✅ Link da imagem salvo:", imageLinkData);
+
+            alert("Produto e link da imagem salvos com sucesso!");
+        } catch (error) {
+            console.error("❌ Erro ao salvar produto ou link da imagem:", error);
+            alert("Erro ao salvar produto: " + error.message);
+        }
     });
+});

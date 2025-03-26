@@ -54,7 +54,12 @@ saveProductButton.addEventListener("click", async () => {
         const response = await fetch(`${API_BASE_URL}/Produto/Adicionar`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newProduct),
+            body: JSON.stringify({
+                Nome: name,
+                Preco: preco,
+                Quantidade: quantity,
+                imgLink:imgLink
+            })
         });
 
         if (!response.ok) {
@@ -76,7 +81,7 @@ saveProductButton.addEventListener("click", async () => {
 async function carregarProdutos() {
     try {
         console.log("Carregando produtos...");
-        const response = await fetch(`${API_BASE_URL}/Produto`);
+        const response = await fetch(`${API_BASE_URL}/Produto`); // Removido o ${id}
         
         if (!response.ok) {
             const errorText = await response.text();

@@ -107,7 +107,7 @@ async function carregarProdutos() {
                 <p>Preço: R$ ${product.preco.toFixed(2)}</p>
                 <p>Quantidade: ${product.quantidade}</p>
                 <button class="remove-stock-btn" data-id="${product.id}">Excluir</button>
-                <button class="add-stock-btn" data-id="${product.id}">Adicionar Estoque</button>
+                <button class="add-stock-btn" data-id="${product.id}">Adicionar mais um</button>
             `;
 
             productsContainer.appendChild(productDiv);
@@ -189,10 +189,44 @@ async function removerProduto(id) {
 async function adicionarAoEstoque(id) {
     try {
         console.log(`Adicionando estoque ao produto ${id}...`);
+
+        
+
+        async function adicionarAoEstoque(produtoId, quantidade) {
+            // Converta o ID para inteiro
+            const idInteiro = parseInt(produtoId);
+
+            console.log('Estoque atualizado:', updateProduto);
+
+
+            try {
+                const Pproduto = await fetch(`$API_BASE_UR/Produto/${idInteiro}`, {
+                    method: 'PUT', // ou o método que você está usando
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ quantidade: quantidade })
+                });
+                Pproduto.quantidade += 1;
+
+                if (!Pproduto.ok) {
+                    throw new Error("Erro ao encontra");
+                }
+                
+                // resto do seu código
+            } catch (error) {
+                console.error('Erro ao adicionar estoque:', error);
+            }
+        }
+
+       
+        // Incrementa a quantidade do produto
+        const produto = await Pproduto.json();
+        // Envia a requisição para atualizar o produto
         const response = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ quantidade: 1 }) // Certifique-se de que o backend espera "quantidade"
+            body: JSON.stringify(produto) // Envia o objeto completo do produto
         });
 
         if (!response.ok) {
@@ -202,10 +236,13 @@ async function adicionarAoEstoque(id) {
 
         alert("Estoque atualizado com sucesso!");
         await carregarProdutos(); // Atualiza a lista de produtos
-    } catch (error) {
+    } 
+    catch (error) {
         console.error("Erro ao adicionar estoque:", error);
         alert("Erro ao atualizar estoque: " + error.message);
     }
+
+    
 }
 
 // Carregar produtos ao carregar a página

@@ -7,17 +7,48 @@ const saveProductButton = document.getElementById("saveProductButton");
 const productsContainer = document.getElementById("products-container");
 const cancelButton = document.getElementById("cancelButton");
 
-// Verificação de elementos do DOM
-if (!addProductForm || !addProductButton || !saveProductButton || !productsContainer || !cancelButton) {
-    console.error("Elementos do DOM não encontrados!");
-    alert("Erro crítico: Elementos da página não carregados corretamente");
-}
-
 // Exibir o formulário ao clicar no botão "Adicionar Produto"
 addProductButton.addEventListener("click", () => {
     addProductForm.classList.remove("hidden");
 }
 );
+
+document.getElementById("DetalhesV").addEventListener("click", () => {
+    window.open("detalhes.html", "_blank"); // Abre a página em uma nova aba
+});
+
+
+async function carregarEstoque() {
+    try {
+        let response = await fetch(`${API_BASE_URL}/Produto/Todos`);
+        if (!response.ok) {
+            throw new Error("Erro ao carregar estoque.");
+        }
+
+        let produtos = await response.json();
+
+        let estoqueContainer = document.getElementById("estoque-container");
+        estoqueContainer.innerHTML = ""; // Limpa antes de adicionar os novos
+
+        produtos.forEach(produto => {
+            let produtoElement = document.createElement("div");
+            produtoElement.innerHTML = `
+                <p>Nome: ${produto.nome}</p>
+                <p>Estoque: ${produto.quantidade}</p>
+                <p>Total de Vendas: ${produto.totalVendas || 0}</p>
+                <button class="add-stock-btn" data-id="${produto.id}">Adicionar Estoque</button>
+                <button class="remove-stock-btn" data-id="${produto.id}">Remover Produto</button>
+            `;
+            estoqueContainer.appendChild(produtoElement);
+        });
+
+        adicionarEventosBotoes(); // Reaplica os eventos nos botões
+    } catch (error) {
+        console.error("Erro ao carregar estoque:", error);
+        alert("Erro ao carregar estoque.");
+    }
+}
+
 
 // Captura os dados do formulário e envia para a API
 saveProductButton.addEventListener("click", async () => {

@@ -1,3 +1,48 @@
+async function venderProduto(id) {
+    try {
+        // Faz a requisição para obter o produto atual
+        let produtoResponse = await fetch(`${API_BASE_URL}/Produto/${id}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!produtoResponse.ok) {
+            throw new Error("Erro ao buscar produto.");
+        }
+
+        let produto = await produtoResponse.json();
+
+        // Verifica se há estoque suficiente
+        if (produto.quantidade <= 0) {
+            alert("Estoque insuficiente!");
+            return;
+        }
+
+        // Atualiza a quantidade vendida e remove do estoque
+        produto.quantidade -= 1;
+        produto.totalVendas = (produto.totalVendas || 0) + 1;
+
+        // Envia a atualização para o banco
+        let updateResponse = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(produto)
+        });
+
+        if (!updateResponse.ok) {
+            throw new Error("Erro ao registrar venda.");
+        }
+
+        alert("Venda registrada com sucesso!");
+        await carregarProdutos(); // Atualiza a página
+    } catch (error) {
+        console.error("Erro ao vender produto:", error);
+        alert("Erro ao registrar venda: " + error.message);
+    }
+}
+
+
+
 let produtos = []; // Declara a variável no escopo global
 
 document.addEventListener("DOMContentLoaded", async () => {

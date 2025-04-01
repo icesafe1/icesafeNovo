@@ -98,6 +98,41 @@ h1 {
 .remove-container-btn:hover {
     background-color: #e64a19;
 }
+.sales-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f9fa;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 10px auto;
+}
+
+#totalSales {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-right: 10px;
+}
+
+#DetalhesV {
+    background-color:#1e7a9e; 
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition:  0.3s ease;
+}
+
+#DetalhesV:hover {
+    background-color: #0c4e68;
+}
+
+
 .product-card:hover {
     transform: scale(1.05);
 }

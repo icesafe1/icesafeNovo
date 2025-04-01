@@ -110,7 +110,8 @@ async function carregarProdutos() {
                 <button class="add-stock-btn" data-id="${product.id}">Adicionar mais um</button>
             `;
 
-            productsContainer.appendChild(productDiv);
+            productDiv.setAttribute("data-id", product.id);
+
         });
 
         adicionarEventosBotoes();

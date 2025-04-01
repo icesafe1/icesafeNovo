@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
 };
 
 
-   document.getElementById('checkoutButton').addEventListener('click', () => {
+document.getElementById('checkoutButton').addEventListener('click', () => {
     let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0;  // Obtém o total de vendas anterior
     let cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0); // Calcula o total do carrinho
     
@@ -182,6 +182,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         console.log(`Usuário avaliou com ${rating} estrelas`);
     }
-});
-
-
+}); 

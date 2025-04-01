@@ -68,7 +68,25 @@
         </div>
     </div>
 
+    <div id="thankYouModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Obrigado pela sua compra!</h2>
+            <p id="thankYouMessage"></p>
+            <button id="closeThankYouModal" class="close-button">Fechar</button>
+        </div>
+    </div>
+
     <script src="src/JavaScript/inicio.js"></script>
     <script src="src/JavaScript/estoque.js"></script> 
+    <script>
+        const productCard = document.createElement('div');
+        productCard.innerHTML = `
+            <img src="${product.imgLink || 'img/produto-sem-imagem.jpg'}" alt="${product.nome}">
+            <h3>${product.nome}</h3>
+            <p>Preço: R$ ${product.preco.toFixed(2)}</p>
+            <p>Disponível: ${product.quantidade}</p>
+            <button onclick="addToCart(${product.id})">Adicionar ao carrinho</button>
+        `;
+    </script>
 </body>
 </html>

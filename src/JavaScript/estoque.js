@@ -119,6 +119,40 @@ async function carregarProdutos() {
         alert("Erro ao carregar produtos: " + error.message);
     }
 }
+async function adicionarAoEstoque(id) {
+    try {
+        console.log(`Adicionando estoque ao produto ${id}...`);
+
+        // Primeiro, busque o produto com o id usando GET
+        let produtoResponse = await fetch(`${API_BASE_URL}/Produto/${id}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+        if (!produtoResponse.ok) {
+            throw new Error("Erro ao buscar produto. Verifique o ID.");
+        }
+        const produto = await produtoResponse.json();
+
+        // Agora, envie a requisição para atualizar o produto
+        const response = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(produto)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Falha ao atualizar estoque");
+        }
+
+        alert("Estoque atualizado com sucesso!");
+        await carregarProdutos(); // Atualiza a lista de produtos
+    } 
+    catch (error) {
+        console.error("Erro ao adicionar estoque:", error);
+        alert("Erro ao atualizar estoque: " + error.message);
+    }
+}
 
 // Função para adicionar eventos aos botões
 function adicionarEventosBotoes() {
@@ -186,64 +220,7 @@ async function removerProduto(id) {
 }
 
 // Função para adicionar ao estoque
-async function adicionarAoEstoque(id) {
-    try {
-        console.log(`Adicionando estoque ao produto ${id}...`);
 
-        
-
-        async function adicionarAoEstoque(produtoId, quantidade) {
-            // Converta o ID para inteiro
-            const idInteiro = parseInt(produtoId);
-
-            console.log('Estoque atualizado:', updateProduto);
-
-
-            try {
-                const Pproduto = await fetch(`$API_BASE_UR/Produto/${idInteiro}`, {
-                    method: 'PUT', // ou o método que você está usando
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ quantidade: quantidade })
-                });
-                Pproduto.quantidade += 1;
-
-                if (!Pproduto.ok) {
-                    throw new Error("Erro ao encontra");
-                }
-                
-                // resto do seu código
-            } catch (error) {
-                console.error('Erro ao adicionar estoque:', error);
-            }
-        }
-
-       
-        // Incrementa a quantidade do produto
-        const produto = await Pproduto.json();
-        // Envia a requisição para atualizar o produto
-        const response = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(produto) // Envia o objeto completo do produto
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || "Falha ao atualizar estoque");
-        }
-
-        alert("Estoque atualizado com sucesso!");
-        await carregarProdutos(); // Atualiza a lista de produtos
-    } 
-    catch (error) {
-        console.error("Erro ao adicionar estoque:", error);
-        alert("Erro ao atualizar estoque: " + error.message);
-    }
-
-    
-}
 
 // Carregar produtos ao carregar a página
 window.addEventListener("load", () => {
@@ -260,3 +237,4 @@ window.addEventListener("error", (event) => {
 cancelButton.addEventListener("click", () => {
     addProductForm.classList.add("hidden"); // Oculta o formulário
 });
+console.log("POR QUE QUE ESSA MERDA NÃO DA CERTO")

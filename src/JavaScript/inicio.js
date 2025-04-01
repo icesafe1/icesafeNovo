@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     let produtos = JSON.parse(localStorage.getItem("produtos")) || [
-        { id: 1, name: "Torrada", price: 3.20, imgSrc: "src/images/torada.jpg", quantity: 10 },
-        { id: 2, name: "Bolacha Bauducco", price: 2.50, imgSrc: "src/images/bolacha bauduco 2,50.jpg", quantity: 15 },
-        { id: 3, name: "Tortuguita", price: 1.00, imgSrc: "src/images/tortuguita 1,00.jpg", quantity: 20 }
+        { id: 1, name: "Torrada", price: 3.20, imgSrc: "src/images/torada.jpg", quantity: 10 },    
     ];
     const cartItems = [];
     const totalPriceElement = document.getElementById("totalPrice");
@@ -20,9 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const cartSidebar = document.getElementById("cartSidebar");
         cartSidebar.style.display = 'none';  // Torna o carrinho invisível
     };
-
-    // Adiciona o evento de clique para abrir o carrinho (por exemplo, em um botão com ID 'openCart')
-    const openCartButton = document.getElementById('openCart'); // Adicione um botão com esse ID
+    const openCartButton = document.getElementById('openCart'); 
     if (openCartButton) {
         openCartButton.addEventListener('click', openCart);
     }
@@ -51,19 +47,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Função para adicionar um produto ao carrinho
+   // Função para adicionar um produto ao carrinho
     window.addToCart = function(id) {
-        const product = produtos.find(p => p.id === id);
-        if (product && product.quantity > 0) {
-            product.quantity -= 1;
-            cartItems.push(product);
-            updateCart();
-            localStorage.setItem("produtos", JSON.stringify(produtos));
-            renderProductList();
-        } else {
-            alert("Produto esgotado!");
-        }
-    };
+    const product = produtos.find(p => p.id === id);
+    if (product && product.quantity > 0) {
+        product.quantity -= 1;
+        cartItems.push(product);
+        updateCart();
+        localStorage.setItem("produtos", JSON.stringify(produtos));
+        renderProductList();
+    } else {
+        alert("Produto esgotado!");
+    }
+};
+
 
     // Função para atualizar o carrinho de compras
     function updateCart() {
@@ -91,30 +88,42 @@ document.addEventListener("DOMContentLoaded", () => {
         totalPriceElement.innerHTML = `<strong>Total: R$ ${totalPrice.toFixed(2)}</strong>`;
     }
 
-    // Função para remover um produto do carrinho
-    window.removeFromCart = function(index) {
-        const removedItem = cartItems.splice(index, 1)[0];
-        const product = produtos.find(p => p.id === removedItem.id);
-        if (product) {
-            product.quantity == 0;
-        }
-        updateCart();
-        localStorage.setItem("produtos", JSON.stringify(produtos));
-        renderProductList();
-    };
+   // Função para remover um produto do carrinho
+ window.removeFromCart = function(index) {
+    const removedItem = cartItems.splice(index, 1)[0]; // Remove o item do carrinho
+    const product = produtos.find(p => p.id === removedItem.id); // Encontra o produto no estoque
 
-    // Função para limpar o carrinho
-    document.getElementById('checkoutButton').addEventListener('click', () => {
-        // Limpa o carrinho
-        cartItems.length = 0;
-        updateCart();  // Atualiza o carrinho na interface
-        localStorage.setItem("produtos", JSON.stringify(produtos));  // Atualiza o estoque no localStorage
-        alert("Compra finalizada!");  // Exibe uma mensagem de sucesso
+    if (product) {
+        // Incrementa 1 unidade ao estoque
+        product.quantity += 1; // Garante que apenas 1 unidade seja adicionada ao estoque
+    }
 
-        // Limpa o localStorage do carrinho para evitar que itens antigos apareçam
-        localStorage.removeItem("cartItems");
-    });
+    updateCart(); // Atualiza o carrinho
+    localStorage.setItem("produtos", JSON.stringify(produtos)); // Salva os produtos atualizados no localStorage
+    renderProductList(); // Renderiza a lista de produtos no estoque
+};
 
+
+document.getElementById('checkoutButton').addEventListener('click', () => {
+    let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0;  // Obtém o total de vendas anterior
+    let cartTotal = cartItems.reduce((sum, item) => sum + item.price, 0); // Calcula o total do carrinho
+    
+    totalSales += cartTotal;  // Soma com o total anterior
+
+    localStorage.setItem("totalSales", totalSales); // Atualiza no localStorage
+
+    updateTotalSales(); // Se existir essa função, ela deve atualizar a interface
+
+    // Limpa o carrinho
+    cartItems.length = 0;
+    updateCart();
+    localStorage.setItem("produtos", JSON.stringify(produtos));
+    alert("Compra finalizada!");
+
+    localStorage.removeItem("cartItems");
+});
+
+    
     renderProductList(); // Inicializa a lista de produtos
 });
 
@@ -136,42 +145,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 //estrelas
-
 document.addEventListener("DOMContentLoaded", () => {
-    const checkoutButton = document.getElementById('checkoutButton');  // Botão de "Finalizar Compra"
-    const closeModalButton = document.getElementById('closeModal');  // Botão de "Voltar"
-    const reviewModal = document.getElementById('reviewModal');  // Modal de Avaliação
-    const stars = document.querySelectorAll('.star');  // Estrelas de avaliação
+    const checkoutButton = document.getElementById('checkoutButton');
+    const closeModalButton = document.getElementById('closeModal');
+    const reviewModal = document.getElementById('reviewModal');
+    const stars = document.querySelectorAll('.star');
 
-    // Abre o modal de avaliação ao clicar em "Finalizar Compra"
-    checkoutButton.addEventListener('click', () => {
-        reviewModal.classList.remove('hidden');  // Remove a classe 'hidden' para mostrar o modal
-    });
+    if (checkoutButton && reviewModal) {
+        checkoutButton.addEventListener('click', () => {
+            reviewModal.classList.remove('hidden');
+            stars.forEach(star => star.classList.remove("rated"));
+        });
+    }
 
-    // Fecha o modal de avaliação ao clicar em "Voltar"
-    closeModalButton.addEventListener('click', () => {
-        reviewModal.classList.add('hidden');  // Adiciona a classe 'hidden' para esconder o modal
-    });
-    
+    if (closeModalButton && reviewModal) {
+        closeModalButton.addEventListener('click', () => {
+            reviewModal.classList.add('hidden');
+        });
+    }
 
-    // Adiciona o comportamento de clique nas estrelas
     stars.forEach(star => {
         star.addEventListener('click', () => {
-            const ratingValue = star.getAttribute('data-value');  // Pega o valor da estrela clicada
-            setRating(ratingValue);  // Atualiza as estrelas com o valor selecionado
+            const ratingValue = star.getAttribute('data-value');
+            setRating(ratingValue);
         });
     });
 
-    // Função para marcar as estrelas como avaliadas
     function setRating(rating) {
         stars.forEach(star => {
             const starValue = star.getAttribute('data-value');
             if (starValue <= rating) {
-                star.classList.add('rated');  // Marca a estrela com cor dourada
+                star.classList.add('rated');
             } else {
-                star.classList.remove('rated');  // Remove a cor dourada da estrela
+                star.classList.remove('rated');
             }
         });
+        console.log(`Usuário avaliou com ${rating} estrelas`);
     }
-});
-
+}); 

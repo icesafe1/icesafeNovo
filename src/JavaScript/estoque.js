@@ -237,4 +237,6 @@ window.addEventListener("error", (event) => {
 cancelButton.addEventListener("click", () => {
     addProductForm.classList.add("hidden"); // Oculta o formulário
 });
+
 console.log("POR QUE QUE ESSA MERDA NÃO DA CERTO")
+

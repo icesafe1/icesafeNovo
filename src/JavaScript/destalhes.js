@@ -42,5 +42,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Função para voltar à página anterior
 function voltarPagina() {
-    window.history.back();
+    window.location.href = "estoque.html"; // Redireciona para a página de estoque
 }

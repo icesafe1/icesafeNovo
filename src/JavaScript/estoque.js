@@ -7,12 +7,6 @@ const saveProductButton = document.getElementById("saveProductButton");
 const productsContainer = document.getElementById("products-container");
 const cancelButton = document.getElementById("cancelButton");
 
-// Verificação de elementos do DOM
-if (!addProductForm || !addProductButton || !saveProductButton || !productsContainer || !cancelButton) {
-    console.error("Elementos do DOM não encontrados!");
-    alert("Erro crítico: Elementos da página não carregados corretamente");
-}
-
 // Exibir o formulário ao clicar no botão "Adicionar Produto"
 addProductButton.addEventListener("click", () => {
     addProductForm.classList.remove("hidden");
@@ -199,6 +193,7 @@ async function removerProduto(id) {
     }
 }
 
+
 // Carregar produtos ao carregar a página
 window.addEventListener("load", () => {
     console.log("Página carregada - iniciando...");
@@ -215,6 +210,11 @@ cancelButton.addEventListener("click", () => {
     addProductForm.classList.add("hidden"); // Oculta o formulário
 });
 
+
+document.getElementById("DetalhesV").addEventListener("click", (event) => {
+    event.preventDefault(); // Evita o comportamento padrão do link
+    window.location.href = "detalhes.html"; // Redireciona para detalhes.html
+
 document.addEventListener("DOMContentLoaded", () => {
     const detalhesVendasButton = document.getElementById("DetalhesV");
 
@@ -225,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         console.error("Botão 'Detalhes de vendas' não encontrado no DOM.");
     }
+
 });
 
 console.log("POR QUE QUE ESSA MERDA NÃO DA CERTO");

@@ -14,8 +14,20 @@
         <h1>BEM VINDO A ICE SAFE</h1>
         <div class="button-container">
             <a href="inicio.html" class="button">COMPRAR</a>
-            <a href="estoque.html" class="button">ESTOQUE</a>
+            <a href="#" class="button" onclick="acessarEstoque()">ESTOQUE</a>
         </div>
     </main>
+    <script>
+        function acessarEstoque() {
+            const senhaCorreta = "123"; // Substitua pela senha desejada
+            const senha = prompt("Digite a senha para acessar o estoque:");
+
+            if (senha === senhaCorreta) {
+                window.location.href = "estoque.html"; // Redireciona para a página de estoque
+            } else {
+                alert("Senha incorreta! Acesso negado.");
+            }
+        }
+    </script>
 </body>
 </html>

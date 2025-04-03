@@ -168,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Incrementa 1 unidade ao estoque
             product.quantidade += 1;
 
+
             // Reduz a quantidade do item no carrinho
             cartItem.quantity -= 1;
 
@@ -316,4 +317,5 @@ window.renderProductList = function (produtos) {
         `;
         productList.appendChild(productCard);
     });
+
 };

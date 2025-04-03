@@ -1,30 +1,62 @@
 const API_BASE_URL = "https://localhost:7223/api"; // Substitua pela URL base da sua API
 
-// Função para carregar os produtos do LocalStorage
-function carregarProdutos() {
-    let produtos = JSON.parse(localStorage.getItem("produtos")) || []; // Recupera os produtos do LocalStorage
-    const tableBody = document.querySelector("#productTable tbody");
-    tableBody.innerHTML = ""; // Limpa a tabela antes de renderizar
 
-    produtos.forEach(produto => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${produto.nome}</td>
-            <td>R$ ${produto.preco.toFixed(2)}</td>
-            <td>${produto.quantidade}</td>
-            <td>
-                <button class="edit" onclick="editarProduto(${produto.id})">Editar</button>
-                ${produto.ativo 
-                    ? `<button class="inactivate" onclick="inativarProduto(${produto.id})">Inativar</button>` 
-                    : `<button class="activate" onclick="ativarProduto(${produto.id})">Ativar</button>`}
-            </td>
-        `;
-        tableBody.appendChild(row);
-    });
+// Função para carregar os produtos do backend
+async function carregarProdutos() {
+    try {
+        // Faz uma requisição GET para o backend
+        const response = await fetch(`${API_BASE_URL}/Produto`);
+        if (!response.ok) {
+            throw new Error("Erro ao carregar produtos do backend");
+        }
+
+        const produtos = await response.json(); // Converte a resposta para JSON
+        const tableBody = document.querySelector("#productTable tbody");
+        tableBody.innerHTML = ""; // Limpa a tabela antes de renderizar
+
+        // Renderiza os produtos na tabela
+        produtos.forEach(produto => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${produto.nome}</td>
+                <td>R$ ${produto.preco.toFixed(2)}</td>
+                <td>${produto.quantidade}</td>
+                <td>
+                    <button class="edit" onclick="editarProduto(${produto.id})">Editar</button>
+                    ${produto.ativo 
+                        ? `<button class="inactivate" onclick="inativarProduto(${produto.id})">Inativar</button>` 
+                        : `<button class="activate" onclick="ativarProduto(${produto.id})">Ativar</button>`}
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Erro ao carregar produtos:", error);
+        alert("Erro ao carregar produtos: " + error.message);
+    }
+
 }
 
 // Função para editar um produto
 async function editarProduto(id) {
+
+    try {
+        const novoNome = prompt("Digite o novo nome do produto:");
+        const novoPreco = parseFloat(prompt("Digite o novo preço do produto:"));
+        const novaQuantidade = parseInt(prompt("Digite a nova quantidade do produto:"));
+
+        if (!novoNome || isNaN(novoPreco) || isNaN(novaQuantidade)) {
+            alert("Preencha todos os campos corretamente.");
+            return;
+        }
+
+        // Busca o produto atual para manter o link da imagem
+        const responseProduto = await fetch(`${API_BASE_URL}/Produto/${id}`);
+        if (!responseProduto.ok) {
+            throw new Error("Erro ao buscar o produto atual.");
+        }
+        const produtoAtual = await responseProduto.json();
+
     let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
     const produto = produtos.find(p => p.id === id);
     if (!produto) {
@@ -49,16 +81,19 @@ async function editarProduto(id) {
     produto.imgLink = novoImgLink.trim() || produto.imgLink; // Mantém o link da imagem atual se o campo estiver vazio
 
     try {
+
         // Envia as alterações para o backend
         const response = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+
                 id: produto.id, // Inclui o ID no corpo da requisição
                 nome: produto.nome,
                 preco: produto.preco,
                 quantidade: produto.quantidade,
                 imgLink: produto.imgLink
+
             })
         });
 
@@ -66,6 +101,7 @@ async function editarProduto(id) {
             const errorText = await response.text();
             throw new Error(errorText || "Erro ao atualizar o produto no backend.");
         }
+
 
         // Atualiza o LocalStorage após a confirmação do backend
         localStorage.setItem("produtos", JSON.stringify(produtos));
@@ -105,6 +141,7 @@ function ativarProduto(id) {
     localStorage.setItem("produtos", JSON.stringify(produtos)); // Atualiza o LocalStorage
     alert("Produto ativado com sucesso!");
     carregarProdutos(); // Recarrega a lista de produtos
+
 }
 
 // Carrega os produtos ao carregar a página

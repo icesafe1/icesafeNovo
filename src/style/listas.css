@@ -1,0 +1,105 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #87CEEB;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+header h1 {
+    color: black;
+    font-size: 27px; 
+    text-align: center; 
+    margin: 10px 0;
+}
+
+header .button {
+    background-color: white;
+    color: #1e7a9e;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+header .button:hover {
+    background-color: #589bb6;
+    color: white;
+}
+
+table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #87CEEB;
+}
+
+th {
+    background-color: #1e7a9e;
+    color: white;
+}
+
+button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.edit {
+    background-color: #ffc107; /* Amarelo */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.edit:hover {
+    background-color: #e0a800;
+}
+
+button.inactivate {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.inactivate:hover {
+    background-color: #a71d2a;
+}
+
+button.activate {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.activate:hover {
+    background-color: #218838;
+}

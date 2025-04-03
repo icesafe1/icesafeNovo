@@ -309,6 +309,7 @@ input[type="file"] {
     background-color: #589bb6; 
 }
 
+
 .small-button {
     padding: 5px 10px;
     font-size: 14px;
@@ -366,3 +367,9 @@ input[type="file"] {
     top: 20px; 
     right: 10px; /* Altera para a direita */
 }
+
+
+.button:hover {
+    background-color: #589bb6; 
+}
+

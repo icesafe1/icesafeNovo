@@ -7,7 +7,6 @@ const saveProductButton = document.getElementById("saveProductButton");
 const productsContainer = document.getElementById("products-container");
 const cancelButton = document.getElementById("cancelButton");
 
-
 // Exibir o formulário ao clicar no botão "Adicionar Produto"
 addProductButton.addEventListener("click", () => {
     addProductForm.classList.remove("hidden");
@@ -216,7 +215,6 @@ async function removerProduto(id) {
 
 // Função para adicionar ao estoque
 
-
 // Carregar produtos ao carregar a página
 window.addEventListener("load", () => {
     console.log("Página carregada - iniciando...");
@@ -233,5 +231,10 @@ cancelButton.addEventListener("click", () => {
     addProductForm.classList.add("hidden"); // Oculta o formulário
 });
 
-console.log("POR QUE QUE ESSA MERDA NÃO DA CERTO")
+document.getElementById("DetalhesV").addEventListener("click", (event) => {
+    event.preventDefault(); // Evita o comportamento padrão do link
+    window.location.href = "detalhes.html"; // Redireciona para detalhes.html
+});
+
+console.log("POR QUE QUE ESSA MERDA NÃO DA CERTO");
 

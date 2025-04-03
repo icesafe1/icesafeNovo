@@ -351,3 +351,18 @@ input[type="file"] {
     max-width: 400px;
     width: 90%;
 }
+
+
+.buttonlista {
+    background-color: #1e7a9e; 
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-decoration: none; 
+    border-radius: 5px;
+    display: inline-block;
+    transition: background-color 0.3s;
+    position: absolute; 
+    top: 20px; 
+    right: 10px; /* Altera para a direita */
+}

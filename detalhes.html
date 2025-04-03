@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes das Vendas</title>
+    <link rel="stylesheet" href="/src/style/detalhes.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Relatório de Vendas</h2>
+
+        <table class="sales-table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade Vendida</th>
+                    <th>Receita (R$)</th>
+                </tr>
+            </thead>
+            <tbody id="salesData"></tbody>
+        </table>
+
+        <p class="total-sales" id="total15dias">Rendimento últimos 15 dias: R$ 0.00</p>
+        <p class="total-sales" id="total30dias">Rendimento último mês: R$ 0.00</p>
+
+        <button class="back-button" onclick="voltarPagina()">Voltar</button>
+    </div>
+
+    <script src="/src/JavaScript/destalhes.js"></script>
+</body>
+</html>

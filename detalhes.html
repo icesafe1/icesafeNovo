@@ -10,6 +10,7 @@
     <div class="container">
         <h2>Relatório de Vendas</h2>
 
+        <!-- Tabela existente -->
         <table class="sales-table">
             <thead>
                 <tr>
@@ -19,6 +20,20 @@
                 </tr>
             </thead>
             <tbody id="salesData"></tbody>
+        </table>
+
+        <!-- Nova Tabela de Detalhes do Produto -->
+        <h3>Detalhes dos Produtos</h3>
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Preço (R$)</th>
+                    <th>Quantidade de Vendas</th>
+                </tr>
+            </thead>
+            <tbody id="productDetails"></tbody>
         </table>
 
         <p class="total-sales" id="total15dias">Rendimento últimos 15 dias: R$ 0.00</p>

@@ -22,9 +22,6 @@ async function carregarProdutos() {
                 <td>${produto.quantidade}</td>
                 <td>
                     <button class="edit" onclick="editarProduto(${produto.id})">Editar</button>
-                    ${produto.ativo 
-                        ? `<button class="inactivate" onclick="inativarProduto(${produto.id})">Inativar</button>` 
-                        : `<button class="activate" onclick="ativarProduto(${produto.id})">Ativar</button>`}
                 </td>
             `;
             tableBody.appendChild(row);
@@ -88,14 +85,15 @@ async function inativarProduto(id) {
         });
 
         if (!response.ok) {
-            throw new Error("Erro ao inativar produto");
+            const errorText = await response.text();
+            throw new Error(errorText || "Erro ao inativar produto.");
         }
 
         alert("Produto inativado com sucesso!");
         carregarProdutos(); // Recarrega a lista de produtos
     } catch (error) {
         console.error("Erro ao inativar produto:", error);
-        alert("Erro ao inativar produto.");
+        alert("Erro ao inativar produto: " + error.message);
     }
 }
 
@@ -107,14 +105,15 @@ async function ativarProduto(id) {
         });
 
         if (!response.ok) {
-            throw new Error("Erro ao ativar produto");
+            const errorText = await response.text();
+            throw new Error(errorText || "Erro ao ativar produto.");
         }
 
         alert("Produto ativado com sucesso!");
         carregarProdutos(); // Recarrega a lista de produtos
     } catch (error) {
         console.error("Erro ao ativar produto:", error);
-        alert("Erro ao ativar produto.");
+        alert("Erro ao ativar produto: " + error.message);
     }
 }
 

@@ -20,7 +20,6 @@ async function venderProduto(id) {
 
         // Atualiza a quantidade vendida e remove do estoque
         produto.quantidade -= 1;
-        produto.totalVendas = (produto.totalVendas || 0) + 1;
 
         // Envia a atualização para o banco
         let updateResponse = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
@@ -34,7 +33,8 @@ async function venderProduto(id) {
         }
 
         alert("Venda registrada com sucesso!");
-        await carregarProdutos(); // Atualiza a página
+        produtos = await fetchProducts(); // Atualiza a lista de produtos
+        renderProductList(produtos); // Atualiza a exibição
     } catch (error) {
         console.error("Erro ao vender produto:", error);
         alert("Erro ao registrar venda: " + error.message);
@@ -303,7 +303,11 @@ window.renderProductList = function (produtos) {
     const productList = document.getElementById("product-list");
     productList.innerHTML = ""; // Limpa a lista de produtos antes de renderizar
 
-    produtos.forEach((product) => {
+    // Filtra produtos com quantidade maior que 0
+    const produtosDisponiveis = produtos.filter(product => product.quantidade > 0);
+
+    // Renderiza apenas os produtos disponíveis
+    produtosDisponiveis.forEach((product) => {
         const productCard = document.createElement("div");
         productCard.classList.add("product-card");
 

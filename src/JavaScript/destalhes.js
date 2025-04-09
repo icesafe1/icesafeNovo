@@ -1,4 +1,5 @@
-fetch('http://localhost:3000/api/produtos')
+fetch("http://localhost:5000/api/vendas")
+
     .then(res => res.json())
     .then(produtos => {
         const productDetails = document.getElementById("productDetails");

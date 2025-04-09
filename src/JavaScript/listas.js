@@ -19,9 +19,7 @@ async function carregarProdutos() {
                 <td>${produto.quantidade}</td>
                 <td>
                     <button class="edit" onclick="editarProduto(${produto.id})">Editar</button>
-                    ${produto.ativo 
-                        ? `<button class="inactivate" onclick="inativarProduto(${produto.id})">Inativar</button>` 
-                        : `<button class="activate" onclick="ativarProduto(${produto.id})">Ativar</button>`}
+                   
                 </td>
             `;
             tableBody.appendChild(row);
@@ -76,42 +74,7 @@ async function editarProduto(id) {
     }
 }
 
-async function inativarProduto(id) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/Produto/Inativar/${id}`, {
-            method: "PUT"
-        });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || "Erro ao inativar produto.");
-        }
 
-        alert("Produto inativado com sucesso!");
-        carregarProdutos();
-    } catch (error) {
-        console.error("Erro ao inativar produto:", error);
-        alert("Erro ao inativar produto: " + error.message);
-    }
-}
-
-async function ativarProduto(id) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/Produto/Ativar/${id}`, {
-            method: "PUT"
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || "Erro ao ativar produto.");
-        }
-
-        alert("Produto ativado com sucesso!");
-        carregarProdutos();
-    } catch (error) {
-        console.error("Erro ao ativar produto:", error);
-        alert("Erro ao ativar produto: " + error.message);
-    }
-}
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);

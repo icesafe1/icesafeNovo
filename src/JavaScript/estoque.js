@@ -10,8 +10,7 @@ const cancelButton = document.getElementById("cancelButton");
 // Exibir o formulário ao clicar no botão "Adicionar Produto"
 addProductButton.addEventListener("click", () => {
     addProductForm.classList.remove("hidden");
-}
-);
+});
 
 // Captura os dados do formulário e envia para a API
 saveProductButton.addEventListener("click", async () => {
@@ -294,3 +293,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+

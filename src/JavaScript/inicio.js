@@ -123,6 +123,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Atualiza o carrinho
                 updateCart();
+
+                // Abre o carrinho automaticamente
+                const cartSidebar = document.getElementById("cartSidebar");
+                if (cartSidebar) {
+                    cartSidebar.style.display = 'block'; // Torna o carrinho visível
+                } else {
+                    console.error("Carrinho não encontrado no DOM.");
+                }
             } else {
                 alert("Produto esgotado!");
             }
@@ -162,13 +170,8 @@ document.addEventListener("DOMContentLoaded", () => {
    // Função para remover um produto do carrinho
     window.removeFromCart = function (index) {
         const cartItem = cartItems[index]; // Obtém o item do carrinho pelo índice
-        const product = produtos.find(p => p.id === cartItem.id); // Encontra o produto no estoque
 
-        if (product) {
-            // Incrementa 1 unidade ao estoque
-            product.quantidade += 1;
-
-
+        if (cartItem) {
             // Reduz a quantidade do item no carrinho
             cartItem.quantity -= 1;
 
@@ -178,12 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Atualiza o carrinho e a lista de produtos
+        // Atualiza o carrinho
         updateCart();
-        renderProductList(produtos);
-
-        // Salva os produtos atualizados no localStorage
-        localStorage.setItem("produtos", JSON.stringify(produtos));
     };
 
 const thankYouModal = document.getElementById("thankYouModal");

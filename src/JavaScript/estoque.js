@@ -227,6 +227,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
-
-console.log("POR QUE QUE ESSA MERDA NÃO DA CERTO");
-
+}
+);

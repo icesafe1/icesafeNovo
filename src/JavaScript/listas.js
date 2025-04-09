@@ -1,19 +1,16 @@
-const API_BASE_URL = "https://localhost:7223/api"; // Substitua pela URL base da sua API
+const API_BASE_URL = "https://localhost:7223/api";
 
-// Função para carregar os produtos do backend
 async function carregarProdutos() {
     try {
-        // Faz uma requisição GET para o backend
         const response = await fetch(`${API_BASE_URL}/Produto`);
         if (!response.ok) {
             throw new Error("Erro ao carregar produtos do backend");
         }
 
-        const produtos = await response.json(); // Converte a resposta para JSON
+        const produtos = await response.json(); 
         const tableBody = document.querySelector("#productTable tbody");
-        tableBody.innerHTML = ""; // Limpa a tabela antes de renderizar
+        tableBody.innerHTML = ""; 
 
-        // Renderiza os produtos na tabela
         produtos.forEach(produto => {
             const row = document.createElement("tr");
             row.innerHTML = `
@@ -30,9 +27,9 @@ async function carregarProdutos() {
         console.error("Erro ao carregar produtos:", error);
         alert("Erro ao carregar produtos: " + error.message);
     }
+
 }
 
-// Função para editar um produto
 async function editarProduto(id) {
     try {
         const novoNome = prompt("Digite o novo nome do produto:");
@@ -44,23 +41,37 @@ async function editarProduto(id) {
             return;
         }
 
-        // Busca o produto atual para manter o link da imagem
         const responseProduto = await fetch(`${API_BASE_URL}/Produto/${id}`);
         if (!responseProduto.ok) {
             throw new Error("Erro ao buscar o produto atual.");
         }
         const produtoAtual = await responseProduto.json();
 
-        // Envia as alterações para o backend
+    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+    const produto = produtos.find(p => p.id === id);
+    if (!produto) {
+        alert("Produto não encontrado!");
+        return;
+    }
+
+    produto.nome = novoNome;
+    produto.preco = novoPreco;
+    produto.quantidade = novaQuantidade;
+    produto.imgLink = novoImgLink.trim() || produto.imgLink;
+
+    try {
+
         const response = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: id, // Inclui o ID no corpo da requisição
-                nome: novoNome,
-                preco: novoPreco,
-                quantidade: novaQuantidade,
-                imgLink: produtoAtual.imgLink // Mantém o link da imagem atual
+
+                id: produto.id, 
+                nome: produto.nome,
+                preco: produto.preco,
+                quantidade: produto.quantidade,
+                imgLink: produto.imgLink
+
             })
         });
 
@@ -69,12 +80,14 @@ async function editarProduto(id) {
             throw new Error(errorText || "Erro ao atualizar o produto no backend.");
         }
 
+        localStorage.setItem("produtos", JSON.stringify(produtos));
         alert("Produto editado com sucesso!");
-        carregarProdutos(); // Recarrega a lista de produtos
+        carregarProdutos();
     } catch (error) {
         console.error("Erro ao editar produto:", error);
         alert("Erro ao editar produto no backend.");
     }
+
 }
 
 // Função para inativar um produto
@@ -94,15 +107,16 @@ async function inativarProduto(id) {
     } catch (error) {
         console.error("Erro ao inativar produto:", error);
         alert("Erro ao inativar produto: " + error.message);
-    }
-}
 
-// Função para ativar um produto
-async function ativarProduto(id) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/Produto/Ativar/${id}`, {
-            method: "PUT"
-        });
+    }
+
+function inativarProduto(id) {
+    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+    const produto = produtos.find(p => p.id === id);
+    if (!produto) {
+        alert("Produto não encontrado!");
+        return;
+    }
 
         if (!response.ok) {
             const errorText = await response.text();
@@ -114,8 +128,27 @@ async function ativarProduto(id) {
     } catch (error) {
         console.error("Erro ao ativar produto:", error);
         alert("Erro ao ativar produto: " + error.message);
-    }
+
+    produto.ativo = false; 
+    localStorage.setItem("produtos", JSON.stringify(produtos));
+    alert("Produto inativado com sucesso!");
+    carregarProdutos();
 }
 
-// Carrega os produtos ao carregar a página
+function ativarProduto(id) {
+    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+    const produto = produtos.find(p => p.id === id);
+    if (!produto) {
+        alert("Produto não encontrado!");
+        return;
+
+    }
+
+    produto.ativo = true;
+    localStorage.setItem("produtos", JSON.stringify(produtos));
+    alert("Produto ativado com sucesso!");
+    carregarProdutos();
+
+}}
+
 document.addEventListener("DOMContentLoaded", carregarProdutos);

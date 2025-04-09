@@ -182,23 +182,7 @@ function adicionarEventosBotoes() {
                 alert("Erro: ID do produto não encontrado");
                 return;
             }
-            const response = await fetch(`${API_BASE_URL}/Produto/Remover/${id}`, { 
-                method: "DELETE" 
-            });
-        });
-    });
-
-    // Adiciona novos eventos para adicionar estoque
-    document.querySelectorAll(".add-stock-btn").forEach(button => {
-        const id = button.getAttribute("data-id");
-        console.log("Evento de adicionar estoque vinculado ao botão ID:", id);
-        button.addEventListener("click", async () => {
-            console.log("Adicionando estoque ao produto ID:", id);
-            if (!id) {
-                alert("Erro: ID do produto não encontrado");
-                return;
-            }
-            await adicionarAoEstoque(id);
+            await removerProduto(id); // Chama a função de remoção
         });
     });
 
@@ -221,8 +205,8 @@ function adicionarEventosBotoes() {
 async function removerProduto(id) {
     try {
         console.log(`Enviando requisição para remover produto com ID: ${id}`);
-        const response = await fetch(`${API_BASE_URL}/Produto/Remover/${id}`, { 
-            method: "DELETE" 
+        const response = await fetch(`${API_BASE_URL}/Produto/Remover/${id}`, {
+            method: "DELETE"
         });
 
         if (!response.ok) {
@@ -293,10 +277,22 @@ cancelButton.addEventListener("click", () => {
     addProductForm.classList.add("hidden"); // Oculta o formulário
 });
 
+
 document.getElementById("DetalhesV").addEventListener("click", (event) => {
     event.preventDefault(); // Evita o comportamento padrão do link
     window.location.href = "detalhes.html"; // Redireciona para detalhes.html
+
+document.addEventListener("DOMContentLoaded", () => {
+    const detalhesVendasButton = document.getElementById("DetalhesV");
+
+    if (detalhesVendasButton) {
+        detalhesVendasButton.addEventListener("click", () => {
+            window.location.href = "detalhes.html"; // Redireciona para a página de detalhes
+        });
+    } else {
+        console.error("Botão 'Detalhes de vendas' não encontrado no DOM.");
+    }
+
 });
-
-console.log("POR QUE QUE ESSA MERDA NÃO DA CERTO");
-
+}
+);

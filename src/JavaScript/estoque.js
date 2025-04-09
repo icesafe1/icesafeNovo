@@ -85,11 +85,15 @@ async function carregarProdutos() {
         const produtos = await response.json();
         console.log("Produtos recebidos da API:", produtos);
 
-        console.log("Atualizando container de produtos...");
-        productsContainer.innerHTML = ""; // Limpa o container antes de adicionar os produtos
+        // Limpa o container antes de adicionar os produtos
+        productsContainer.innerHTML = "";
 
-        produtos.forEach(product => {
-            console.log("Produto recebido:", product);
+        // Filtra produtos com quantidade maior que 0
+        const produtosDisponiveis = produtos.filter(product => product.quantidade > 0);
+
+        // Renderiza apenas os produtos disponíveis
+        produtosDisponiveis.forEach(product => {
+            console.log("Produto disponível:", product);
 
             const productDiv = document.createElement("div");
             productDiv.classList.add("product-card");
@@ -102,17 +106,20 @@ async function carregarProdutos() {
                 <p>Quantidade: ${product.quantidade}</p>
                 <button class="remove-stock-btn" data-id="${product.id}">Excluir</button>
                 <button class="add-stock-btn" data-id="${product.id}">Adicionar mais um</button>
+                <button class="sell-product-btn" data-id="${product.id}">Vender</button>
             `;
 
             productsContainer.appendChild(productDiv);
         });
 
+        // Adiciona eventos aos botões
         adicionarEventosBotoes();
     } catch (error) {
         console.error("Erro ao carregar produtos:", error);
         alert("Erro ao carregar produtos: " + error.message);
     }
 }
+
 async function adicionarAoEstoque(id) {
     try {
         console.log(`Adicionando estoque ao produto ${id}...`);
@@ -157,6 +164,14 @@ function adicionarEventosBotoes() {
         btn.replaceWith(btn.cloneNode(true));
     });
 
+    document.querySelectorAll(".add-stock-btn").forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+    });
+
+    document.querySelectorAll(".sell-product-btn").forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+    });
+
     // Adiciona novos eventos para remover produto
     document.querySelectorAll(".remove-stock-btn").forEach(button => {
         const id = button.getAttribute("data-id");
@@ -168,6 +183,20 @@ function adicionarEventosBotoes() {
                 return;
             }
             await removerProduto(id); // Chama a função de remoção
+        });
+    });
+
+    // Adiciona novos eventos para vender produto
+    document.querySelectorAll(".sell-product-btn").forEach(button => {
+        const id = button.getAttribute("data-id");
+        console.log("Evento de vender vinculado ao botão ID:", id);
+        button.addEventListener("click", async () => {
+            console.log("Vendendo produto ID:", id);
+            if (!id) {
+                alert("Erro: ID do produto não encontrado");
+                return;
+            }
+            await venderProduto(id);
         });
     });
 }
@@ -193,6 +222,44 @@ async function removerProduto(id) {
     }
 }
 
+// Função para vender um produto
+async function venderProduto(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Produto/${id}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao buscar produto.");
+        }
+
+        const produto = await response.json();
+
+        if (produto.quantidade <= 0) {
+            alert("Estoque insuficiente!");
+            return;
+        }
+
+        produto.quantidade -= 1;
+
+        const updateResponse = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(produto)
+        });
+
+        if (!updateResponse.ok) {
+            throw new Error("Erro ao registrar venda.");
+        }
+
+        alert("Venda registrada com sucesso!");
+        await carregarProdutos(); // Atualiza a lista de produtos no estoque
+    } catch (error) {
+        console.error("Erro ao vender produto:", error);
+        alert("Erro ao registrar venda: " + error.message);
+    }
+}
 
 // Carregar produtos ao carregar a página
 window.addEventListener("load", () => {

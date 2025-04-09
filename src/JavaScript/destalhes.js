@@ -1,3 +1,24 @@
+fetch('http://localhost:3000/api/produtos')
+    .then(res => res.json())
+    .then(produtos => {
+        const productDetails = document.getElementById("productDetails");
+
+        produtos.forEach(produto => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${produto.id}</td>
+                <td>${produto.nome}</td>
+                <td>R$ ${parseFloat(produto.preco).toFixed(2)}</td>
+                <td>${produto.quantidade_vendida}</td>
+            `;
+            productDetails.appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Erro ao carregar dados dos produtos:', error);
+    });
+
+
 document.addEventListener("DOMContentLoaded", () => {
     const salesDataElement = document.getElementById("salesData");
     const total15diasElement = document.getElementById("total15dias");

@@ -20,8 +20,8 @@ header h1 {
 }
 
 header .button {
-    background-color: white;
-    color: #1e7a9e;
+    background-color: #246681;
+    color: #e2eef3;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
@@ -31,8 +31,8 @@ header .button {
 }
 
 header .button:hover {
-    background-color: #589bb6;
-    color: white;
+    background-color: #3987a5;
+    color: #e9f0f3;
 }
 
 table {

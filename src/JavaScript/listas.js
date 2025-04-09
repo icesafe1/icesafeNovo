@@ -19,9 +19,6 @@ async function carregarProdutos() {
                 <td>${produto.quantidade}</td>
                 <td>
                     <button class="edit" onclick="editarProduto(${produto.id})">Editar</button>
-                    ${produto.ativo 
-                        ? `<button class="inactivate" onclick="inativarProduto(${produto.id})">Inativar</button>` 
-                        : `<button class="activate" onclick="ativarProduto(${produto.id})">Ativar</button>`}
                 </td>
             `;
             tableBody.appendChild(row);
@@ -90,9 +87,27 @@ async function editarProduto(id) {
         console.error("Erro ao editar produto:", error);
         alert("Erro ao editar produto no backend.");
     }
+
+}
+
+// Função para inativar um produto
+async function inativarProduto(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Produto/Inativar/${id}`, {
+            method: "PUT"
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Erro ao inativar produto.");
+        }
+
+        alert("Produto inativado com sucesso!");
+        carregarProdutos(); // Recarrega a lista de produtos
     } catch (error) {
-        console.error("Erro ao editar produto:", error);
-        alert("Erro ao editar produto: " + error.message);
+        console.error("Erro ao inativar produto:", error);
+        alert("Erro ao inativar produto: " + error.message);
+
     }
 
 function inativarProduto(id) {
@@ -102,6 +117,17 @@ function inativarProduto(id) {
         alert("Produto não encontrado!");
         return;
     }
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Erro ao ativar produto.");
+        }
+
+        alert("Produto ativado com sucesso!");
+        carregarProdutos(); // Recarrega a lista de produtos
+    } catch (error) {
+        console.error("Erro ao ativar produto:", error);
+        alert("Erro ao ativar produto: " + error.message);
 
     produto.ativo = false; 
     localStorage.setItem("produtos", JSON.stringify(produtos));
@@ -115,6 +141,7 @@ function ativarProduto(id) {
     if (!produto) {
         alert("Produto não encontrado!");
         return;
+
     }
 
     produto.ativo = true;

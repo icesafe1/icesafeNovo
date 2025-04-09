@@ -281,7 +281,7 @@ cancelButton.addEventListener("click", () => {
 document.getElementById("DetalhesV").addEventListener("click", (event) => {
     event.preventDefault(); // Evita o comportamento padrão do link
     window.location.href = "detalhes.html"; // Redireciona para detalhes.html
-
+});
 document.addEventListener("DOMContentLoaded", () => {
     const detalhesVendasButton = document.getElementById("DetalhesV");
 
@@ -294,5 +294,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
-}
-);

@@ -27,7 +27,6 @@ async function carregarProdutos() {
         console.error("Erro ao carregar produtos:", error);
         alert("Erro ao carregar produtos: " + error.message);
     }
-
 }
 
 async function editarProduto(id) {
@@ -47,6 +46,7 @@ async function editarProduto(id) {
         }
         const produtoAtual = await responseProduto.json();
 
+
     let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
     const produto = produtos.find(p => p.id === id);
     if (!produto) {
@@ -60,17 +60,16 @@ async function editarProduto(id) {
     produto.imgLink = novoImgLink.trim() || produto.imgLink;
 
     try {
-
         const response = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
 
-                id: produto.id, 
-                nome: produto.nome,
-                preco: produto.preco,
-                quantidade: produto.quantidade,
-                imgLink: produto.imgLink
+                id: produtoAtual.id,
+                nome: novoNome,
+                preco: novoPreco,
+                quantidade: novaQuantidade,
+                imgLink: novoImgLink
 
             })
         });
@@ -80,12 +79,14 @@ async function editarProduto(id) {
             throw new Error(errorText || "Erro ao atualizar o produto no backend.");
         }
 
+
         localStorage.setItem("produtos", JSON.stringify(produtos));
+
         alert("Produto editado com sucesso!");
         carregarProdutos();
     } catch (error) {
         console.error("Erro ao editar produto:", error);
-        alert("Erro ao editar produto no backend.");
+        alert("Erro ao editar produto: " + error.message);
     }
 
 }
@@ -111,31 +112,42 @@ async function inativarProduto(id) {
     }
 
 function inativarProduto(id) {
-    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-    const produto = produtos.find(p => p.id === id);
-    if (!produto) {
-        alert("Produto não encontrado!");
-        return;
-    }
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || "Erro ao ativar produto.");
-        }
+    fetch(`${API_BASE_URL}/Produto/Inativar/${id}`, {
+        method: "PUT"
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Erro ao inativar produto.");
+            }
+            alert("Produto inativado com sucesso!");
+            carregarProdutos();
+        })
+        .catch(error => {
+            console.error("Erro ao inativar produto:", error);
+            alert("Erro ao inativar produto.");
+        });
 
-        alert("Produto ativado com sucesso!");
-        carregarProdutos(); // Recarrega a lista de produtos
-    } catch (error) {
-        console.error("Erro ao ativar produto:", error);
-        alert("Erro ao ativar produto: " + error.message);
-
-    produto.ativo = false; 
-    localStorage.setItem("produtos", JSON.stringify(produtos));
-    alert("Produto inativado com sucesso!");
-    carregarProdutos();
 }
 
 function ativarProduto(id) {
+
+    fetch(`${API_BASE_URL}/Produto/Ativar/${id}`, {
+        method: "PUT"
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Erro ao ativar produto.");
+            }
+            alert("Produto ativado com sucesso!");
+            carregarProdutos();
+        })
+        .catch(error => {
+            console.error("Erro ao ativar produto:", error);
+            alert("Erro ao ativar produto.");
+        });
+}
+
     let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
     const produto = produtos.find(p => p.id === id);
     if (!produto) {

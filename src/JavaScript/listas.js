@@ -7,9 +7,9 @@ async function carregarProdutos() {
             throw new Error("Erro ao carregar produtos do backend");
         }
 
-        const produtos = await response.json(); 
+        const produtos = await response.json();
         const tableBody = document.querySelector("#productTable tbody");
-        tableBody.innerHTML = ""; 
+        tableBody.innerHTML = "";
 
         produtos.forEach(produto => {
             const row = document.createElement("tr");
@@ -19,6 +19,9 @@ async function carregarProdutos() {
                 <td>${produto.quantidade}</td>
                 <td>
                     <button class="edit" onclick="editarProduto(${produto.id})">Editar</button>
+                    ${produto.ativo 
+                        ? `<button class="inactivate" onclick="inativarProduto(${produto.id})">Inativar</button>` 
+                        : `<button class="activate" onclick="ativarProduto(${produto.id})">Ativar</button>`}
                 </td>
             `;
             tableBody.appendChild(row);
@@ -27,7 +30,6 @@ async function carregarProdutos() {
         console.error("Erro ao carregar produtos:", error);
         alert("Erro ao carregar produtos: " + error.message);
     }
-
 }
 
 async function editarProduto(id) {
@@ -47,31 +49,17 @@ async function editarProduto(id) {
         }
         const produtoAtual = await responseProduto.json();
 
-    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-    const produto = produtos.find(p => p.id === id);
-    if (!produto) {
-        alert("Produto não encontrado!");
-        return;
-    }
-
-    produto.nome = novoNome;
-    produto.preco = novoPreco;
-    produto.quantidade = novaQuantidade;
-    produto.imgLink = novoImgLink.trim() || produto.imgLink;
-
-    try {
+        const novoImgLink = produtoAtual.imgLink; // Mantém o link da imagem atual
 
         const response = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-
-                id: produto.id, 
-                nome: produto.nome,
-                preco: produto.preco,
-                quantidade: produto.quantidade,
-                imgLink: produto.imgLink
-
+                id: produtoAtual.id,
+                nome: novoNome,
+                preco: novoPreco,
+                quantidade: novaQuantidade,
+                imgLink: novoImgLink
             })
         });
 
@@ -80,17 +68,14 @@ async function editarProduto(id) {
             throw new Error(errorText || "Erro ao atualizar o produto no backend.");
         }
 
-        localStorage.setItem("produtos", JSON.stringify(produtos));
         alert("Produto editado com sucesso!");
         carregarProdutos();
     } catch (error) {
         console.error("Erro ao editar produto:", error);
-        alert("Erro ao editar produto no backend.");
+        alert("Erro ao editar produto: " + error.message);
     }
-
 }
 
-// Função para inativar um produto
 async function inativarProduto(id) {
     try {
         const response = await fetch(`${API_BASE_URL}/Produto/Inativar/${id}`, {
@@ -103,20 +88,18 @@ async function inativarProduto(id) {
         }
 
         alert("Produto inativado com sucesso!");
-        carregarProdutos(); // Recarrega a lista de produtos
+        carregarProdutos();
     } catch (error) {
         console.error("Erro ao inativar produto:", error);
         alert("Erro ao inativar produto: " + error.message);
-
     }
+}
 
-function inativarProduto(id) {
-    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-    const produto = produtos.find(p => p.id === id);
-    if (!produto) {
-        alert("Produto não encontrado!");
-        return;
-    }
+async function ativarProduto(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Produto/Ativar/${id}`, {
+            method: "PUT"
+        });
 
         if (!response.ok) {
             const errorText = await response.text();
@@ -124,31 +107,11 @@ function inativarProduto(id) {
         }
 
         alert("Produto ativado com sucesso!");
-        carregarProdutos(); // Recarrega a lista de produtos
+        carregarProdutos();
     } catch (error) {
         console.error("Erro ao ativar produto:", error);
         alert("Erro ao ativar produto: " + error.message);
-
-    produto.ativo = false; 
-    localStorage.setItem("produtos", JSON.stringify(produtos));
-    alert("Produto inativado com sucesso!");
-    carregarProdutos();
-}
-
-function ativarProduto(id) {
-    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-    const produto = produtos.find(p => p.id === id);
-    if (!produto) {
-        alert("Produto não encontrado!");
-        return;
-
     }
-
-    produto.ativo = true;
-    localStorage.setItem("produtos", JSON.stringify(produtos));
-    alert("Produto ativado com sucesso!");
-    carregarProdutos();
-
-}}
+}
 
 document.addEventListener("DOMContentLoaded", carregarProdutos);

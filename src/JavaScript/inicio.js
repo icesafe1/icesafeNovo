@@ -19,7 +19,7 @@ async function venderProduto(id) {
         }
 
         // Atualiza a quantidade vendida e remove do estoque
-        produto.quantidade -= 1;
+        produto.quantidade += 1;
 
         // Envia a atualização para o banco
         let updateResponse = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
@@ -27,7 +27,6 @@ async function venderProduto(id) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(produto)
         });
-
         if (!updateResponse.ok) {
             throw new Error("Erro ao registrar venda.");
         }
@@ -227,6 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
             alert("Compra realizada com sucesso!");
             cartItems = [];  // Limpa o carrinho
+            updateCart();    // <- Adicione esta linha para atualizar a interface
             renderProductList(produtos);  // Atualiza a interface com os novos produtos
         } catch (error) {
             console.error("Erro durante a finalização da compra:", error);

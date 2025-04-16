@@ -1,68 +1,82 @@
-fetch("http://localhost:5000/api/vendas")
-
-    .then(res => res.json())
-    .then(produtos => {
-        const productDetails = document.getElementById("productDetails");
-
-        produtos.forEach(produto => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${produto.id}</td>
-                <td>${produto.nome}</td>
-                <td>R$ ${parseFloat(produto.preco).toFixed(2)}</td>
-                <td>${produto.quantidade_vendida}</td>
-            `;
-            productDetails.appendChild(row);
-        });
-    })
-    .catch(error => {
-        console.error('Erro ao carregar dados dos produtos:', error);
-    });
-
-
+// Carregar VENDAS e RELATÓRIO
 document.addEventListener("DOMContentLoaded", () => {
-    const salesDataElement = document.getElementById("salesData");
-    const total15diasElement = document.getElementById("total15dias");
-    const total30diasElement = document.getElementById("total30dias");
+    // Carregar vendas
+    fetch("https://localhost:7223/api/vendas/vendas")
 
-    // Recupera os dados do localStorage
-    let vendas = JSON.parse(localStorage.getItem("vendas")) || [];
-    
-    let total15dias = 0;
-    let total30dias = 0;
-    let hoje = new Date();
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Erro ao carregar dados das vendas.");
+            }
+            return res.json();
+        })
+        .then(vendas => {
+            const productDetails = document.getElementById("productDetails");
 
-    salesDataElement.innerHTML = "";
+            // Limpa a tabela antes de renderizar os dados
+            productDetails.innerHTML = "";
 
-    vendas.forEach(venda => {
-        let vendaData = new Date(venda.data);
+            vendas.forEach(venda => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${venda.produto}</td>
+                    <td>${venda.quantidade}</td>
+                    <td>R$ ${venda.receita.toFixed(2)}</td>
+                    <td>${new Date(venda.data).toLocaleDateString()}</td>
+                `;
+                productDetails.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error("Erro ao carregar dados das vendas:", error);
+        });
 
-        // Calcula os ganhos dos últimos 15 e 30 dias
-        let diferencaDias = Math.floor((hoje - vendaData) / (1000 * 60 * 60 * 24));
+    // Carregar relatório
+    fetch("https://localhost:7223/api/vendas/relatorio")
 
-        if (diferencaDias <= 15) {
-            total15dias += venda.receita;
-        }
-        if (diferencaDias <= 30) {
-            total30dias += venda.receita;
-        }
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Erro ao carregar relatório de vendas.");
+            }
+            return res.json();
+        })
+        .then(relatorio => {
+            const total15diasElement = document.getElementById("total15dias");
+            const total30diasElement = document.getElementById("total30dias");
 
-        let row = `
-            <tr>
-                <td>${venda.produto}</td>
-                <td>${venda.quantidade}</td>
-                <td>R$ ${venda.receita.toFixed(2)}</td>
-            </tr>
-        `;
-
-        salesDataElement.innerHTML += row;
-    });
-
-    total15diasElement.textContent = `Rendimento últimos 15 dias: R$ ${total15dias.toFixed(2)}`;
-    total30diasElement.textContent = `Rendimento último mês: R$ ${total30dias.toFixed(2)}`;
+            total15diasElement.textContent = `Rendimento últimos 15 dias: R$ ${relatorio.ultimos15Dias.toFixed(2)}`;
+            total30diasElement.textContent = `Rendimento último mês: R$ ${relatorio.ultimos30Dias.toFixed(2)}`;
+        })
+        .catch(error => {
+            console.error("Erro ao carregar relatório de vendas:", error);
+        });
 });
 
-// Função para voltar à página anterior
+// Função para voltar
 function voltarPagina() {
-    window.location.href = "estoque.html"; // Redireciona para a página de estoque
+    window.location.href = "estoque.html";
+}
+
+// Função para registrar venda
+async function registrarVenda(produtoId, quantidade) {
+    try {
+        const response = await fetch("http://localhost:7223/api/vendas", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                produtoId: produtoId,
+                quantidade: quantidade
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao registrar venda.");
+        }
+
+        const venda = await response.json();
+        console.log("Venda registrada:", venda);
+        alert("Venda registrada com sucesso!");
+    } catch (error) {
+        console.error("Erro ao registrar venda:", error);
+        alert("Erro ao registrar venda.");
+    }
 }

@@ -1,6 +1,4 @@
-// Adiciona as funções de renderização e carregamento de produtos após a definição dos elementos.
-
-const API_BASE_URL = 'https://localhost:7223/api';
+const API_BASE_URL = 'http://localhost:7223/api';
 
 document.addEventListener("DOMContentLoaded", () => {
     // Seleção de elementos
@@ -69,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     imgLink: imgLink
                 };
 
-                const response = await fetch(`${API_BASE_URL}/Produto/Cadastrar`, {
+                const response = await fetch(`${API_BASE_URL}/Produto/Adicionar`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -95,15 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Carregar produtos usando fetch e renderProductList
     async function carregarProdutos() {
         try {
-            const response = await fetch(`${API_BASE_URL}/Produto`);
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || "Erro ao carregar produtos.");
-            }
-
-            const produtos = await response.json();
-            renderProductList(produtos); // Substituindo a renderização com a nova função
-
+            const produtosData = await fetchProducts();
+            renderProductList(produtosData);
         } catch (error) {
             console.error("Erro ao carregar produtos:", error);
             alert("Erro ao carregar produtos: " + error.message);
@@ -198,6 +189,7 @@ async function removerProduto(id) {
 
 async function venderProduto(id) {
     try {
+        // Busca o produto
         const res = await fetch(`${API_BASE_URL}/Produto/${id}`);
         if (!res.ok) throw new Error("Erro ao buscar produto.");
         const produto = await res.json();
@@ -207,17 +199,78 @@ async function venderProduto(id) {
             return;
         }
 
+        // Atualiza a quantidade do produto
         produto.quantidade--;
 
+        // Atualiza o produto no banco
         const response = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(produto)
         });
 
-        if (!response.ok) throw new Error("Erro ao vender produto.");
+        if (!response.ok) throw new Error("Erro ao atualizar produto.");
+
+        // Registra a venda
+        const vendaResponse = await fetch(`${API_BASE_URL}/Vendas`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                produtoId: produto.id,
+                quantidade: 1,
+                dataVenda: new Date().toISOString(),
+                precoUnitario: produto.preco,
+                nomeProduto: produto.nome
+            })
+        });
+
+        if (!vendaResponse.ok) {
+            const errorData = await vendaResponse.json();
+            console.error("Erro ao registrar a venda:", errorData);
+            throw new Error("Erro ao registrar venda no sistema de vendas.");
+        }
+
+        alert("Venda registrada com sucesso!");
         carregarProdutos();
     } catch (err) {
         console.error("Erro ao vender produto:", err);
+        alert("Erro ao vender produto: " + err.message);
+    }
+}
+
+async function fetchProducts() {
+    try {
+        console.log('Tentando buscar produtos...');
+        console.log('URL da requisição:', `${API_BASE_URL}/Produto`);
+        
+        const response = await fetch(`${API_BASE_URL}/Produto/${id}`, {
+            method: "GET",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            mode: 'cors'
+        });
+
+        console.log('Status da resposta:', response.status);
+        console.log('Headers da resposta:', response.headers);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Resposta do servidor:', errorText);
+            throw new Error(`Erro ao buscar produtos do banco de dados. Status: ${response.status}`);
+        }
+
+        const produtosData = await response.json();
+        console.log('Produtos recebidos:', produtosData);
+        return produtosData;
+    } catch (error) {
+        console.error("Erro detalhado ao carregar produtos:", error);
+        if (error.message.includes('Failed to fetch')) {
+            alert("Não foi possível conectar ao servidor. Verifique se o backend está rodando na porta 7223.");
+        } else {
+            alert("Erro ao carregar produtos: " + error.message);
+        }
+        return [];
     }
 }

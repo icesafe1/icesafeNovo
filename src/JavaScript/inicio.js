@@ -1,3 +1,6 @@
+const API_BASE_URL = 'https://localhost:7223/api';
+
+
 async function venderProduto(id) {
     try {
         // Faz a requisição para obter o produto atual
@@ -19,7 +22,7 @@ async function venderProduto(id) {
         }
 
         // Atualiza a quantidade vendida e remove do estoque
-        produto.quantidade += 1;
+        produto.quantidade -= 1;
 
         // Envia a atualização para o banco
         let updateResponse = await fetch(`${API_BASE_URL}/Produto/Editar/${id}`, {
@@ -65,20 +68,36 @@ let produtos = []; // Declara a variável no escopo global
 
 async function fetchProducts() {
     try {
+        console.log('Tentando buscar produtos...');
+        console.log('URL da requisição:', `${API_BASE_URL}/Produto`);
+        
         const response = await fetch(`${API_BASE_URL}/Produto`, {
             method: "GET",
-            headers: { "Content-Type": "application/json" }
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            mode: 'cors' // Adiciona explicitamente o modo CORS
         });
 
+        console.log('Status da resposta:', response.status);
+        
         if (!response.ok) {
-            throw new Error("Erro ao buscar produtos do banco de dados");
+            const errorText = await response.text();
+            console.error('Resposta do servidor:', errorText);
+            throw new Error(`Erro ao buscar produtos do banco de dados. Status: ${response.status}`);
         }
 
         const produtosData = await response.json();
+        console.log('Produtos recebidos:', produtosData);
         return produtosData;
     } catch (error) {
-        console.error("Erro ao carregar produtos:", error);
-        alert("Erro ao carregar produtos: " + error.message);
+        console.error("Erro detalhado ao carregar produtos:", error);
+        if (error.message.includes('Failed to fetch')) {
+            alert("Não foi possível conectar ao servidor. Verifique se o backend está rodando na porta 7223.");
+        } else {
+            alert("Erro ao carregar produtos: " + error.message);
+        }
         return [];
     }
 }
@@ -199,44 +218,113 @@ document.addEventListener("DOMContentLoaded", () => {
         updateCart();
     };
 
-    const thankYouModal = document.getElementById("thankYouModal");
-    const thankYouMessage = document.getElementById("thankYouMessage");
-    document.getElementById('checkoutButton').addEventListener('click', async () => {
-        let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0;
-        let cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        totalSales += cartTotal;
-        localStorage.setItem("totalSales", totalSales);
-    
+    document.getElementById('checkoutButton')?.addEventListener('click', async () => {
+        if (cartItems.length === 0) {
+            alert("O carrinho está vazio!");
+            return;
+        }
+
         try {
+            // Primeiro, verifica se todos os produtos ainda estão disponíveis
             const produtos = await fetchProducts();
-    
+            let produtosAtualizados = [...produtos];
+
+            // Verifica estoque e prepara atualizações
             for (const cartItem of cartItems) {
-                const product = produtos.find(p => p.id === cartItem.id);
-                if (product) {
-                    product.quantidade -= cartItem.quantity;
-    
-                    // Verificando se o produto foi encontrado e se a quantidade é válida
-                    if (product.quantidade < 0) {
-                        throw new Error(`Estoque insuficiente para o produto ${product.nome}`);
-                    }
-    
-                    
+                const product = produtosAtualizados.find(p => p.id === cartItem.id);
+                if (!product) {
+                    throw new Error(`Produto ${cartItem.name} não encontrado no sistema`);
+                }
+                if (product.quantidade < cartItem.quantity) {
+                    throw new Error(`Estoque insuficiente para o produto ${product.nome}`);
                 }
             }
-    
-            alert("Compra realizada com sucesso!");
-            cartItems = [];  // Limpa o carrinho
-            updateCart();    // <- Adicione esta linha para atualizar a interface
-            renderProductList(produtos);  // Atualiza a interface com os novos produtos
+
+            // Processa cada item do carrinho
+            for (const cartItem of cartItems) {
+                const product = produtosAtualizados.find(p => p.id === cartItem.id);
+                
+                // Atualiza a quantidade no produto
+                product.quantidade -= cartItem.quantity;
+
+                // Atualiza o produto no backend
+                const updateResponse = await fetch(`${API_BASE_URL}/Produto/Editar/${product.id}`, {
+                    method: "PUT",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: product.id,
+                        nome: product.nome,
+                        preco: product.preco,
+                        quantidade: product.quantidade,
+                        imgLink: product.imgLink
+                    })
+                });
+
+                if (!updateResponse.ok) {
+                    const errorText = await updateResponse.text();
+                    console.error("Erro ao atualizar produto:", errorText);
+                    throw new Error(`Erro ao atualizar o produto ${product.nome}`);
+                }
+
+                // Registra a venda
+                const vendaData = {
+                    produtoId: product.id,
+                    quantidade: cartItem.quantity,
+                    dataVenda: new Date().toISOString() // Envia a data em formato ISO (UTC)
+                };
+
+                console.log("Enviando dados da venda:", vendaData);
+
+                const vendaResponse = await fetch(`${API_BASE_URL}/Vendas`, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(vendaData)
+                });
+
+                if (!vendaResponse.ok) {
+                    const errorText = await vendaResponse.text();
+                    console.error("Erro ao registrar venda:", errorText);
+                    throw new Error(`Erro ao registrar a venda do produto ${product.nome}`);
+                }
+            }
+
+            // Atualiza o total de vendas no localStorage
+            let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0;
+            let cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            totalSales += cartTotal;
+            localStorage.setItem("totalSales", totalSales);
+
+            // Mostra o modal de agradecimento
+            const thankYouModal = document.getElementById('thankYouModal');
+            if (thankYouModal) {
+                thankYouModal.classList.remove('hidden');
+            }
+
+            // Limpa o carrinho e atualiza a interface
+            cartItems = [];
+            updateCart();
+            
+            // Atualiza a lista de produtos
+            produtosAtualizados = await fetchProducts();
+            renderProductList(produtosAtualizados);
         } catch (error) {
             console.error("Erro durante a finalização da compra:", error);
             alert("Ocorreu um erro ao finalizar a compra: " + error.message);
         }
     });
     
-    // Fechar o modal
-    document.getElementById("closeThankYouModal").addEventListener("click", () => {
-        thankYouModal.classList.add("hidden");
+    // Adiciona evento para fechar o modal de agradecimento
+    document.getElementById('closeThankYouModal')?.addEventListener('click', () => {
+        const thankYouModal = document.getElementById('thankYouModal');
+        if (thankYouModal) {
+            thankYouModal.classList.add('hidden');
+        }
     });
 
 });
@@ -263,3 +351,10 @@ window.renderProductList = function (produtos) {
         productList.appendChild(productCard);
     });
 };
+// Exibir o modal
+document.getElementById("thankYouModal").classList.remove("hidden");
+
+// Fechar o modal
+document.getElementById("closeThankYouModal").addEventListener("click", function () {
+    document.getElementById("thankYouModal").classList.add("hidden");
+});

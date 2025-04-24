@@ -62,44 +62,46 @@ button {
     cursor: pointer;
 }
 
-button.edit {
-    background-color: #ffc107; /* Amarelo */
+
+#modalEditar {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #246681;
     color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    box-shadow: 0 0 15px rgb(237, 237, 239);
 }
 
-button.edit:hover {
-    background-color: #e0a800;
-}
-
-button.inactivate {
-    background-color: #dc3545; /* Vermelho */
+.btn-editar {
+    background-color:#246681;
     color: white;
-    padding: 5px 10px;
     border: none;
-    border-radius: 5px;
+    padding: 8px 12px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
-button.inactivate:hover {
-    background-color: #a71d2a;
+.btn-editar:hover {
+    background-color: #91c8de;
 }
 
-button.activate {
-    background-color: #28a745; /* Verde */
+.btn-excluir {
+    background-color: #246681;
     color: white;
-    padding: 5px 10px;
     border: none;
-    border-radius: 5px;
+    padding: 8px 12px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
-button.activate:hover {
-    background-color: #218838;
+.btn-excluir:hover {
+    background-color:#91bbcb;
 }

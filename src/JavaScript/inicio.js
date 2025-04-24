@@ -1,3 +1,6 @@
+const API_BASE_URL = 'https://localhost:7223/api';
+
+
 async function venderProduto(id) {
     try {
         // Faz a requisição para obter o produto atual
@@ -27,10 +30,28 @@ async function venderProduto(id) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(produto)
         });
-
         if (!updateResponse.ok) {
             throw new Error("Erro ao registrar venda.");
         }
+        const vendaResponse = await fetch("https://localhost:7223/api/Vendas", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                produtoId: product.id,
+                quantidade: cartItem.quantity,
+                dataVenda: new Date().toISOString() // <-- ESSA LINHA ADICIONADA
+            })
+        });
+        
+    
+        
+        
+        if (!vendaResponse.ok) {
+            const errorData = await vendaResponse.json();
+            console.error("Erro ao registrar a venda:", errorData);
+            throw new Error("Erro ao registrar venda no sistema de vendas.");
+        }
+        
 
         alert("Venda registrada com sucesso!");
         produtos = await fetchProducts(); // Atualiza a lista de produtos
@@ -45,35 +66,52 @@ async function venderProduto(id) {
 
 let produtos = []; // Declara a variável no escopo global
 
+async function fetchProducts() {
+    try {
+        console.log('Tentando buscar produtos...');
+        console.log('URL da requisição:', `${API_BASE_URL}/Produto`);
+        
+        const response = await fetch(`${API_BASE_URL}/Produto`, {
+            method: "GET",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            mode: 'cors' // Adiciona explicitamente o modo CORS
+        });
+
+        console.log('Status da resposta:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Resposta do servidor:', errorText);
+            throw new Error(`Erro ao buscar produtos do banco de dados. Status: ${response.status}`);
+        }
+
+        const produtosData = await response.json();
+        console.log('Produtos recebidos:', produtosData);
+        return produtosData;
+    } catch (error) {
+        console.error("Erro detalhado ao carregar produtos:", error);
+        if (error.message.includes('Failed to fetch')) {
+            alert("Não foi possível conectar ao servidor. Verifique se o backend está rodando na porta 7223.");
+        } else {
+            alert("Erro ao carregar produtos: " + error.message);
+        }
+        return [];
+    }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     const productList = document.getElementById("product-list");
 
-    async function fetchProducts() {
-        try {
-            const response = await fetch(`${API_BASE_URL}/Produto`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" }
-            });
-
-            if (!response.ok) {
-                throw new Error("Erro ao buscar produtos do banco de dados");
-            }
-
-            const produtosData = await response.json();
-            return produtosData;
-        } catch (error) {
-            console.error("Erro ao carregar produtos:", error);
-            alert("Erro ao carregar produtos: " + error.message);
-            return [];
-        }
-    }
-
-    produtos = await fetchProducts(); // Carrega os produtos do backend
+    // Carrega os produtos do backend
+    produtos = await fetchProducts();
     renderProductList(produtos); // Renderiza os produtos na página
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const cartItems = [];
+    let cartItems = [];
     const totalPriceElement = document.getElementById("totalPrice");
     const cartContainer = document.querySelector(".cart-items");
 
@@ -88,18 +126,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const cartSidebar = document.getElementById("cartSidebar");
         cartSidebar.style.display = 'none';  // Torna o carrinho invisível
     };
+
     const openCartButton = document.getElementById('openCart'); 
     if (openCartButton) {
         openCartButton.addEventListener('click', openCart);
     }
 
-    // Adiciona o evento de clique para fechar o carrinho ao clicar no 'X'
-    const closeCartButton = document.getElementById('closeCart');
-    if (closeCartButton) {
-        closeCartButton.addEventListener('click', closeCart);
-    }
-
-   // Função para adicionar um produto ao carrinho
+    // Função para adicionar um produto ao carrinho
     window.addToCart = function (id) {
         // Certifique-se de que o array 'produtos' está acessível
         const product = produtos.find(p => p.id === id);
@@ -167,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
         totalPriceElement.innerHTML = `<strong>Total: R$ ${totalPrice.toFixed(2)}</strong>`;
     }
 
-   // Função para remover um produto do carrinho
+    // Função para remover um produto do carrinho
     window.removeFromCart = function (index) {
         const cartItem = cartItems[index]; // Obtém o item do carrinho pelo índice
 
@@ -185,120 +218,117 @@ document.addEventListener("DOMContentLoaded", () => {
         updateCart();
     };
 
-const thankYouModal = document.getElementById("thankYouModal");
-const thankYouMessage = document.getElementById("thankYouMessage");
-
-document.getElementById('checkoutButton').addEventListener('click', async () => {
-    let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0; // Obtém o total de vendas anterior
-    let cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0); // Calcula o total do carrinho
-
-    totalSales += cartTotal; // Soma com o total anterior
-
-    // Atualiza o total de vendas no localStorage
-    localStorage.setItem("totalSales", totalSales);
-
-    // Atualiza o estoque no backend com base nos itens comprados
-    try {
-        for (const cartItem of cartItems) {
-            const product = produtos.find(p => p.id === cartItem.id);
-            if (product) {
-                product.quantidade -= cartItem.quantity; // Desconta a quantidade comprada do estoque
-
-                // Envia a atualização para o backend
-                const response = await fetch(`${API_BASE_URL}/Produto/Editar/${product.id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(product) // Envia o produto atualizado
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erro ao atualizar o produto ${product.nome} no backend`);
-                }
-            }
+    document.getElementById('checkoutButton')?.addEventListener('click', async () => {
+        if (cartItems.length === 0) {
+            alert("O carrinho está vazio!");
+            return;
         }
 
-        // Atualiza o localStorage com os produtos atualizados
-        localStorage.setItem("produtos", JSON.stringify(produtos));
+        try {
+            // Primeiro, verifica se todos os produtos ainda estão disponíveis
+            const produtos = await fetchProducts();
+            let produtosAtualizados = [...produtos];
 
-        // Limpa o carrinho
-        cartItems.length = 0;
-        updateCart();
-        renderProductList(produtos);
-
-        // Exibe a mensagem de agradecimento no modal
-        thankYouMessage.innerHTML = `Total da compra: R$ ${cartTotal.toFixed(2)}`;
-        thankYouModal.classList.remove("hidden");
-    } catch (error) {
-        console.error("Erro ao atualizar o estoque no backend:", error);
-        alert("Erro ao finalizar a compra. Tente novamente.");
-    }
-});
-
-// Fechar o modal
-document.getElementById("closeThankYouModal").addEventListener("click", () => {
-    thankYouModal.classList.add("hidden");
-});
-
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const openCartButton = document.getElementById('imageButton');  // Botão para abrir o carrinho
-    const cartSidebar = document.getElementById('cartSidebar');  // O carrinho
-    const closeCartButton = document.getElementById('closeCart');  // Botão de fechar carrinho
-
-    // Função para abrir o carrinho
-    openCartButton.addEventListener('click', () => {
-        cartSidebar.style.display = 'block';  // Torna o carrinho visível
-    });
-
-    // Função para fechar o carrinho
-    closeCartButton.addEventListener('click', () => {
-        cartSidebar.style.display = 'none';  // Torna o carrinho invisível
-    });
-});
-
-
-//estrelas
-document.addEventListener("DOMContentLoaded", () => {
-    const checkoutButton = document.getElementById('checkoutButton');
-    const closeModalButton = document.getElementById('closeModal');
-    const reviewModal = document.getElementById('reviewModal');
-    const stars = document.querySelectorAll('.star');
-
-    if (checkoutButton && reviewModal) {
-        checkoutButton.addEventListener('click', () => {
-            reviewModal.classList.remove('hidden');
-            stars.forEach(star => star.classList.remove("rated"));
-        });
-    }
-
-    if (closeModalButton && reviewModal) {
-        closeModalButton.addEventListener('click', () => {
-            reviewModal.classList.add('hidden');
-        });
-    }
-
-    stars.forEach(star => {
-        star.addEventListener('click', () => {
-            const ratingValue = star.getAttribute('data-value');
-            setRating(ratingValue);
-        });
-    });
-
-    function setRating(rating) {
-        stars.forEach(star => {
-            const starValue = star.getAttribute('data-value');
-            if (starValue <= rating) {
-                star.classList.add('rated');
-            } else {
-                star.classList.remove('rated');
+            // Verifica estoque e prepara atualizações
+            for (const cartItem of cartItems) {
+                const product = produtosAtualizados.find(p => p.id === cartItem.id);
+                if (!product) {
+                    throw new Error(`Produto ${cartItem.name} não encontrado no sistema`);
+                }
+                if (product.quantidade < cartItem.quantity) {
+                    throw new Error(`Estoque insuficiente para o produto ${product.nome}`);
+                }
             }
-        });
-        console.log(`Usuário avaliou com ${rating} estrelas`);
-    }
+
+            // Processa cada item do carrinho
+            for (const cartItem of cartItems) {
+                const product = produtosAtualizados.find(p => p.id === cartItem.id);
+                
+                // Atualiza a quantidade no produto
+                product.quantidade -= cartItem.quantity;
+
+                // Atualiza o produto no backend
+                const updateResponse = await fetch(`${API_BASE_URL}/Produto/Editar/${product.id}`, {
+                    method: "PUT",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: product.id,
+                        nome: product.nome,
+                        preco: product.preco,
+                        quantidade: product.quantidade,
+                        imgLink: product.imgLink
+                    })
+                });
+
+                if (!updateResponse.ok) {
+                    const errorText = await updateResponse.text();
+                    console.error("Erro ao atualizar produto:", errorText);
+                    throw new Error(`Erro ao atualizar o produto ${product.nome}`);
+                }
+
+                // Registra a venda
+                const vendaData = {
+                    produtoId: product.id,
+                    quantidade: cartItem.quantity,
+                    dataVenda: new Date().toISOString() // Envia a data em formato ISO (UTC)
+                };
+
+                console.log("Enviando dados da venda:", vendaData);
+
+                const vendaResponse = await fetch(`${API_BASE_URL}/Vendas`, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(vendaData)
+                });
+
+                if (!vendaResponse.ok) {
+                    const errorText = await vendaResponse.text();
+                    console.error("Erro ao registrar venda:", errorText);
+                    throw new Error(`Erro ao registrar a venda do produto ${product.nome}`);
+                }
+            }
+
+            // Atualiza o total de vendas no localStorage
+            let totalSales = parseFloat(localStorage.getItem("totalSales")) || 0;
+            let cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            totalSales += cartTotal;
+            localStorage.setItem("totalSales", totalSales);
+
+            // Mostra o modal de agradecimento
+            const thankYouModal = document.getElementById('thankYouModal');
+            if (thankYouModal) {
+                thankYouModal.classList.remove('hidden');
+            }
+
+            // Limpa o carrinho e atualiza a interface
+            cartItems = [];
+            updateCart();
+            
+            // Atualiza a lista de produtos
+            produtosAtualizados = await fetchProducts();
+            renderProductList(produtosAtualizados);
+        } catch (error) {
+            console.error("Erro durante a finalização da compra:", error);
+            alert("Ocorreu um erro ao finalizar a compra: " + error.message);
+        }
+    });
+    
+    // Adiciona evento para fechar o modal de agradecimento
+    document.getElementById('closeThankYouModal')?.addEventListener('click', () => {
+        const thankYouModal = document.getElementById('thankYouModal');
+        if (thankYouModal) {
+            thankYouModal.classList.add('hidden');
+        }
+    });
+
 });
 
-// Função para renderizar a lista de produtos
 window.renderProductList = function (produtos) {
     const productList = document.getElementById("product-list");
     productList.innerHTML = ""; // Limpa a lista de produtos antes de renderizar
@@ -320,5 +350,11 @@ window.renderProductList = function (produtos) {
         `;
         productList.appendChild(productCard);
     });
-
 };
+// Exibir o modal
+document.getElementById("thankYouModal").classList.remove("hidden");
+
+// Fechar o modal
+document.getElementById("closeThankYouModal").addEventListener("click", function () {
+    document.getElementById("thankYouModal").classList.add("hidden");
+});

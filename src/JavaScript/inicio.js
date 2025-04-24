@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addToCart = function(id) {
     const product = produtos.find(p => p.id === id);
     if (product && product.quantity > 0) {
-        product.quantity -= 1;
+        totalPrice += item.price;  // CORRETO! Soma o valor do item ao total
         cartItems.push(product);
         updateCart();
         localStorage.setItem("produtos", JSON.stringify(produtos));

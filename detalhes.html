@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes das Vendas</title>
+    <link rel="stylesheet" href="/src/style/detalhes.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Relatório de Vendas</h2>
+
+     
+
+        <!-- Nova Tabela de Detalhes do Produto -->
+        <h3>Detalhes dos Produtos</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Receita</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody id="productDetails">
+                <!-- As vendas serão renderizadas aqui -->
+            </tbody>
+        </table>
+
+        <p id="total15dias"></p>
+        <p id="total30dias"></p>
+
+        <button class="back-button" onclick="voltarPagina()">Voltar</button>
+    </div>
+
+    <script src="/src/JavaScript/destalhes.js"></script>
+</body>
+</html>

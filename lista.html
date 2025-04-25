@@ -11,9 +11,8 @@
         <h1>Lista de Produtos</h1>
         <a href="estoque.html" class="button">Voltar ao Estoque</a>
     </header>
-
     <main>
-        <table id="productTable">
+        <table id="tabelaProdutos">
             <thead>
                 <tr>
                     <th>Nome</th>
@@ -24,9 +23,31 @@
             </thead>
             <tbody>
                 <!-- Os produtos serão carregados aqui dinamicamente -->
-            </tbody>  
+            </tbody>
         </table>
     </main>
+    <div id="modalEditar" style="display: none;">
+        <h2>Editar Produto</h2>
+        <form id="formEditar">
+            <input type="hidden" id="editId">
+            
+            <label for="editNome">Nome:</label>
+            <input type="text" id="editNome" required>
+            
+            <label for="editPreco">Preço (R$):</label>
+            <input type="number" id="editPreco" step="0.01" required>
+            
+            <label for="editQuantidade">Quantidade:</label>
+            <input type="number" id="editQuantidade" required>
+            
+            <label for="editImgLink">Link da Imagem:</label>
+            <input type="text" id="editImgLink">
+    
+            <button type="submit">Salvar</button>
+            <button type="button" onclick="fecharModal()">Cancelar</button>
+        </form>
+    </div>
+    
 
     <script src="src/JavaScript/listas.js"></script>
     </body>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Produtos</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Produtos</h1>
+        
+        <table id="tabelaProdutos" class="product-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Imagem</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Os produtos serão inseridos aqui pelo JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div id="modalEditar" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Editar Produto</h2>
+            <form id="formEditar">
+                <input type="hidden" id="editId">
+                <div class="form-group">
+                    <label for="editNome">Nome:</label>
+                    <input type="text" id="editNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPreco">Preço:</label>
+                    <input type="number" id="editPreco" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="editQuantidade">Quantidade:</label>
+                    <input type="number" id="editQuantidade" required>
+                </div>
+                <div class="form-group">
+                    <label for="editImgLink">Link da Imagem:</label>
+                    <input type="text" id="editImgLink">
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-salvar">Salvar</button>
+                    <button type="button" class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../JavaScript/listas.js"></script>
+</body>
+</html> 

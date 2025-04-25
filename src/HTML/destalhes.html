@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes das Vendas</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Detalhes das Vendas</h1>
+        
+        <!-- Relatório de Vendas -->
+        <div id="relatorioVendas" class="relatorio-container">
+            <!-- O relatório será inserido aqui via JavaScript -->
+        </div>
+
+        <!-- Tabela de Vendas -->
+        <div class="table-container">
+            <table id="tabelaVendas" class="product-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Preço Unitário</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- As vendas serão inseridas aqui via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Popup de Agradecimento -->
+    <div id="popupAgradecimento" class="popup">
+        <div class="popup-content">
+            <h2>Obrigado pela sua compra!</h2>
+            <p>Sua compra foi finalizada com sucesso.</p>
+            <button onclick="fecharPopup()" class="btn-fechar">Fechar</button>
+        </div>
+    </div>
+
+    <script src="../JavaScript/destalhes.js"></script>
+</body>
+</html> 

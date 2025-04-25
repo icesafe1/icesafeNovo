@@ -65,3 +65,118 @@ document.addEventListener("DOMContentLoaded", () => {
 function voltarPagina() {
     window.location.href = "estoque.html"; // Redireciona para a página de estoque
 }
+
+// Função para mostrar o popup de agradecimento
+function mostrarPopupAgradecimento() {
+    const popup = document.getElementById('popupAgradecimento');
+    popup.style.display = 'flex';
+}
+
+// Função para fechar o popup
+function fecharPopup() {
+    const popup = document.getElementById('popupAgradecimento');
+    popup.style.display = 'none';
+}
+
+// Função para validar a quantidade da compra
+function validarQuantidade(quantidade, estoqueAtual) {
+    if (quantidade <= 0) {
+        alert('A quantidade deve ser maior que zero!');
+        return false;
+    }
+    
+    if (quantidade > estoqueAtual) {
+        alert(`Quantidade indisponível! Estoque atual: ${estoqueAtual}`);
+        return false;
+    }
+    
+    return true;
+}
+
+// Função para registrar venda
+async function registrarVenda(produtoId, quantidade) {
+    try {
+        // Primeiro, verifica se o produto existe e tem estoque suficiente
+        const produtoResponse = await fetch(`${API_BASE_URL}/Produto/${produtoId}`);
+        if (!produtoResponse.ok) {
+            throw new Error("Erro ao buscar produto.");
+        }
+
+        const produto = await produtoResponse.json();
+        
+        // Valida a quantidade
+        if (!validarQuantidade(quantidade, produto.quantidade)) {
+            return;
+        }
+
+        // Atualiza o estoque do produto
+        produto.quantidade -= quantidade;
+        const updateResponse = await fetch(`${API_BASE_URL}/Produto/Editar/${produtoId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(produto)
+        });
+
+        if (!updateResponse.ok) {
+            throw new Error("Erro ao atualizar estoque do produto.");
+        }
+
+        // Registra a venda
+        const vendaResponse = await fetch(`${API_BASE_URL}/vendas`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                produtoId: produtoId,
+                quantidade: quantidade,
+                dataVenda: new Date().toISOString(),
+                precoUnitario: produto.preco,
+                nomeProduto: produto.nome
+            })
+        });
+
+        if (!vendaResponse.ok) {
+            throw new Error("Erro ao registrar venda.");
+        }
+
+        const venda = await vendaResponse.json();
+        console.log("Venda registrada:", venda);
+        
+        // Mostra o popup de agradecimento
+        mostrarPopupAgradecimento();
+        
+        // Atualiza a lista de produtos
+        carregarProdutos();
+    } catch (error) {
+        console.error("Erro ao registrar venda:", error);
+        alert("Erro ao registrar venda: " + error.message);
+    }
+}
+
+// Função para adicionar ao carrinho
+function adicionarAoCarrinho(produtoId, quantidade) {
+    // Busca o produto para verificar o estoque
+    fetch(`${API_BASE_URL}/Produto/${produtoId}`)
+        .then(response => response.json())
+        .then(produto => {
+            if (!validarQuantidade(quantidade, produto.quantidade)) {
+                return;
+            }
+            
+            // Se passou na validação, adiciona ao carrinho
+            const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            carrinho.push({
+                id: produtoId,
+                nome: produto.nome,
+                quantidade: quantidade,
+                preco: produto.preco
+            });
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            
+            // Atualiza a exibição do carrinho
+            atualizarCarrinho();
+        })
+        .catch(error => {
+            console.error("Erro ao adicionar ao carrinho:", error);
+            alert("Erro ao adicionar produto ao carrinho");
+        });
+}

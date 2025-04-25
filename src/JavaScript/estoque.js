@@ -106,7 +106,7 @@ async function carregarProdutos() {
                 <p>Quantidade: ${product.quantidade}</p>
                 <button class="remove-stock-btn" data-id="${product.id}">Excluir</button>
                 <button class="add-stock-btn" data-id="${product.id}">Adicionar mais um</button>
-                <button class="sell-product-btn" data-id="${product.id}">Vender</button>
+             
             `;
 
             productsContainer.appendChild(productDiv);

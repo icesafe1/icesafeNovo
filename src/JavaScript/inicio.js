@@ -101,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
    // Função para adicionar um produto ao carrinho
     window.addToCart = function (id) {
-        // Certifique-se de que o array 'produtos' está acessível
         const product = produtos.find(p => p.id === id);
 
         if (product) {
@@ -123,6 +122,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Atualiza o carrinho
                 updateCart();
+
+                // Abre o carrinho automaticamente
+                const cartSidebar = document.getElementById("cartSidebar");
+                if (cartSidebar) {
+                    cartSidebar.style.display = 'block'; // Torna o carrinho visível
+                } else {
+                    console.error("Elemento 'cartSidebar' não encontrado no DOM.");
+                }
             } else {
                 alert("Produto esgotado!");
             }
